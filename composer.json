@@ -25,7 +25,7 @@
     "source": "https://github.com/markocupic/rsz-benutzerverwaltung-bundle"
   },
   "require": {
-    "contao/core-bundle": "^4.9",
+    "contao/core-bundle": "^4.9"
   },
   "autoload": {
     "psr-4": {
