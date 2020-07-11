@@ -25,36 +25,13 @@ class RSZUser extends System
      */
     private static $defaultAvatarMale = 'files/theme-files/theme_pics/avatars/male-1.png';
 
-
     public function __construct()
     {
-
         parent::__construct();
         $this->import('Database');
         $this->import('BackendUser', 'User');
 
-
         $this->userDir = $GLOBALS['TL_CONFIG']['uploadPath'] . '/Dateiablage/user_dir';
-    }
-
-    /**
-     * setNewPassword Hook for tl_member.password
-     * Synchronize the password with with tl_user
-     * Methode wird durch den setNewPassword Hook aufgerufen,
-     * wenn ein Mitglied sein Passwort ändert
-     *
-     * @param $objMember
-     * @param $strPassword
-     */
-    public function setNewPassword($objMember, $strPassword)
-    {
-
-        $objUser = \UserModel::findByUsername($objMember->username, array('uncached' => true));
-        if ($objUser !== null)
-        {
-            $objUser->password = $strPassword;
-            $objUser->save();
-        }
     }
 
     /**
@@ -62,7 +39,6 @@ class RSZUser extends System
      */
     public static function getAvatar($userId)
     {
-
         $objUser = \UserModel::findByPk($userId);
         if ($objUser != null)
         {
@@ -99,14 +75,12 @@ class RSZUser extends System
      */
     public function maintainUserProperties()
     {
-
         // remove  orphaned user directories from filesystem
         $this->deleteOrphanedDirectories($this->userDir . '/athlet', 'Athlet');
         $this->deleteOrphanedDirectories($this->userDir . '/trainer', 'Trainer');
         $this->deleteOrphanedDirectories($this->userDir . '/vorstand', 'Vorstand');
         $this->deleteOrphanedDirectories($this->userDir . '/website', 'Website');
         $this->deleteOrphanedDirectories($this->userDir . '/eltern', 'Eltern');
-
 
         //synchronize all tl_user.passwords with tl_member.passwords
         $objUser = \UserModel::findAll();
@@ -121,13 +95,13 @@ class RSZUser extends System
                 continue;
             }
             // create user directories
-            $arrGroups = array(
+            $arrGroups = [
                 'Athlet',
                 'Trainer',
                 'Vorstand',
                 'Website',
                 'Eltern',
-            );
+            ];
             if ($objUser->groups != "" && $objUser->funktion != '')
             {
                 foreach ($arrGroups as $strFunction)
@@ -152,11 +126,9 @@ class RSZUser extends System
                 }
             }
 
-
             // collect data
             unset($firstname, $lastname);
             $arrName = explode(" ", $objUser->name);
-
 
             //bei 2-teiligen Nachnamen (z.B. Von Arx)
             if (count($arrName) == 3)
@@ -171,28 +143,28 @@ class RSZUser extends System
                 $firstname = $arrName[1];
             }
 
-            $set = array(
-                "username" => $objUser->username,
-                "firstname" => $firstname != '' ? $firstname : 'firstname',
-                "lastname" => $lastname != '' ? $lastname : 'lastname',
-                "gender" => $objUser->gender,
-                "email" => $objUser->email,
-                "street" => $objUser->street,
-                "postal" => $objUser->postal,
-                "city" => $objUser->city,
-                "mobile" => $objUser->mobile,
-                "phone" => $objUser->telephone,
-                "password" => $objUser->password,
+            $set = [
+                "username"    => $objUser->username,
+                "firstname"   => $firstname != '' ? $firstname : 'firstname',
+                "lastname"    => $lastname != '' ? $lastname : 'lastname',
+                "gender"      => $objUser->gender,
+                "email"       => $objUser->email,
+                "street"      => $objUser->street,
+                "postal"      => $objUser->postal,
+                "city"        => $objUser->city,
+                "mobile"      => $objUser->mobile,
+                "phone"       => $objUser->telephone,
+                "password"    => $objUser->password,
                 "dateOfBirth" => $objUser->dateOfBirth,
-                "language" => $objUser->language,
-                "website" => $objUser->url,
-                "login" => 1,
-            );
+                "language"    => $objUser->language,
+                "website"     => $objUser->url,
+                "login"       => 1,
+            ];
 
             if ($objUser->name != '' && $objUser->username != '')
             {
                 // get assigned member
-                $objDbMember = \MemberModel::findByUsername($objUser->username, array('uncached' => true));
+                $objDbMember = \MemberModel::findByUsername($objUser->username, ['uncached' => true]);
 
                 if ($objDbMember !== null)
                 {
@@ -202,7 +174,6 @@ class RSZUser extends System
                         $objDbMember->{$k} = $v;
                     }
                     $objDbMember->save();
-
                 }
                 else
                 {
@@ -223,7 +194,7 @@ class RSZUser extends System
 
                         // notify Admin
                         $subject = sprintf('Neuer Backend User auf %s', \Environment::get('httpHost'));
-                        $link = sprintf('http://%s/contao/main.php?do=mcupic_be_benutzerverwaltung&act=edit&id=%s', \Environment::get('httpHost'), $objUser->id);
+                        $link = sprintf('http://%s/contao/main.php?do=rsz_benutzerverwaltung&act=edit&id=%s', \Environment::get('httpHost'), $objUser->id);
                         $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, \Environment::get('httpHost'), $link);
                         mail($GLOBALS['TL_CONFIG']['adminEmail'], $subject, $msg);
                         \Message::addConfirmation('Ein neues Mitglied mit dem Benutzernamen ' . $objNewMember->username . ' wurde automatisch erstellt');
@@ -238,35 +209,11 @@ class RSZUser extends System
     }
 
     /**
-     * @param $strRegexp
-     * @param $varValue
-     * @param Widget $objWidget
-     * @return bool
-     */
-    public function myAddCustomRegexp($strRegexp, $varValue, Widget $objWidget)
-    {
-
-        // Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
-        if ($strRegexp == 'name')
-        {
-            if (!strpos(trim($varValue), ' '))
-            {
-                $objWidget->addError('Der Name sollte aus mindestens zwei durch einen Leerschlag voneinander getrennten Wörtern bestehen.');
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * deleteOrphanedDirectories
      * @param $strFolder
      */
     public function deleteOrphanedDirectories($strFolder, $strGroup)
     {
-
         if (!file_exists(TL_ROOT . '/' . $strFolder))
         {
             return;
@@ -302,7 +249,6 @@ class RSZUser extends System
      */
     public function deleteUserFromTlMember(DataContainer $dc)
     {
-
         $objUser = \UserModel::findByPk($dc->id);
         if ($objUser === null)
         {
@@ -317,11 +263,11 @@ class RSZUser extends System
         $objMember->delete();
 
         // delete user directories
-        $arrGroups = array(
-            'Athlet' => 10,
-            'Trainer' => 1,
+        $arrGroups = [
+            'Athlet'   => 10,
+            'Trainer'  => 1,
             'Vorstand' => 7,
-        );
+        ];
         if ($objUser->groups != "")
         {
             foreach ($arrGroups as $groupName => $groupId)

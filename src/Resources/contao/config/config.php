@@ -27,35 +27,24 @@
  * @filesource
  */
 
-
 /**
- * -------------------------------------------------------------------------
- * BACK END MODULES
- * -------------------------------------------------------------------------
+ * Backend modules
  */
-$GLOBALS['BE_MOD']['accounts']['mcupic_be_benutzerverwaltung'] = array(
-    'icon' => 'bundles/markocupicrszbenutzerverwaltung/user_thief.png',
+$GLOBALS['BE_MOD']['accounts']['rsz_benutzerverwaltung'] = array(
     'tables' => array('tl_user')
 );
-
-
-if (TL_MODE === 'BE')
-{
-    $GLOBALS['TL_CSS'][]  = 'system/modules/mcupic_be_benutzerverwaltung/html/mcupic_be_benutzerverwaltung.css';
-
-       // rgxp Hook
-       $GLOBALS['TL_HOOKS']['addCustomRegexp'][] = array('RSZUser', 'myAddCustomRegexp');
-
-}
-
-
-//Adressen-Download Modul
 $GLOBALS['BE_MOD']['accounts']['my_be_rsz_adressen_download'] = array(
-    'icon' => 'bundles/markocupicrszbenutzerverwaltung/doc_excel_table.png',
     'callback' => 'RSZAdressenDownload'
 );
 
 
-// config.php
-$GLOBALS['TL_HOOKS']['setNewPassword'][] = array('RSZUser', 'setNewPassword');
+// CSS
+if (TL_MODE === 'BE')
+{
+    $GLOBALS['TL_CSS'][]  = 'bundles/markocupicrszbenutzerverwaltung/be_benutzerverwaltung.css';
+}
+
+
+
+
 

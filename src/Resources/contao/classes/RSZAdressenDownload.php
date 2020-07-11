@@ -62,14 +62,12 @@ class RSZAdressenDownload extends BackendModule
                   "fax", "email", "alternate_email", "url", "sac_sektion", "funktion", "niveau", "trainingsgruppe",
                   "trainerqualifikation"
               );
+
               if ($this->User->isAdmin)
               {
                      $arr_fields[] = 'username';
               }
-              if ($this->User->isAdmin)
-              {
-                     $arr_fields[] = 'username';
-              }
+
               //Die Spaltenbezeichnungen generieren
               $col = 0;
               $row = 1;

@@ -25,7 +25,8 @@
     "source": "https://github.com/markocupic/rsz-benutzerverwaltung-bundle"
   },
   "require": {
-    "contao/core-bundle": "^4.9"
+    "contao/core-bundle": "^4.9",
+    "phpoffice/phpspreadsheet": "^1.14"
   },
   "autoload": {
     "psr-4": {

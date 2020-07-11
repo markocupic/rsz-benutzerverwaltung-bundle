@@ -9,12 +9,12 @@
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program. If not, please visit the Free
  * Software Foundation website at <http://www.gnu.org/licenses/>.
@@ -58,7 +58,7 @@ $GLOBALS['TL_LANG']['tl_user']['ahv_nr']                = array('AHV-Nr. (13-ste
 $GLOBALS['TL_LANG']['tl_user']['iban']                  = array('Bankverbindung, IBAN-Nr.', 'im Format CH31 8123 9000 0012 4568 9');
 
 
-if ($_GET["do"] == "mcupic_be_benutzerverwaltung");
+if ($_GET["do"] == "rsz_benutzerverwaltung");
 elseif	($_GET["do"] == "group");
 elseif	($_GET["do"] == "login");
 else return;
