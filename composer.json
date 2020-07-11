@@ -1,0 +1,48 @@
+{
+  "name": "markocupic/rsz-benutzerverwaltung-bundle",
+  "description": "RSZ Benutzerverwaltung",
+  "keywords": [
+    "contao",
+    "RSZ",
+    "Benutzerverwaltung",
+    "Regionalkader",
+    "Sportklettern",
+    "Zentralschweiz"
+  ],
+  "version": "1.0",
+  "type": "contao-module",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Marko Cupic",
+      "email": "m.cupic@gmx.ch",
+      "homepage": "https://github.com/markocupic",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/markocupic/rsz-benutzerverwaltung-bundle/issues",
+    "source": "https://github.com/markocupic/rsz-benutzerverwaltung-bundle"
+  },
+  "require": {
+    "contao/core-bundle": "^4.9",
+  },
+  "autoload": {
+    "psr-4": {
+      "Markocupic\\RszBenutzerverwaltungBundle\\": "src/"
+    },
+    "classmap": [
+      "src/Resources/contao"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/config",
+      "src/Resources/contao/dca",
+      "src/Resources/contao/languages",
+      "src/Resources/contao/templates"
+    ]
+  },
+  "extra": {
+    "contao-manager-plugin": "Markocupic\\RszBenutzerverwaltungBundle\\ContaoManager\\Plugin"
+  }
+
+}
