@@ -1,12 +1,16 @@
 <?php
 
 /**
- * Class RSZUser
+ * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @author     Marko Cupic
+ * @package    RSZ Benutzerverwaltung
+ * @license    MIT
+ * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  *
- * Provide miscellaneous methods that are used by the data configuration array.
- * @copyright  Marko Cupic 2005-2010
- * @author     Marko Cupic  <http://www.contao.org>
- * @package    mcupic_be_benutzerverwaltung
+ */
+
+/**
+ * Class RSZUser
  */
 class RSZUser extends System
 {

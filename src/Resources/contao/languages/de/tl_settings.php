@@ -1,10 +1,15 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: Marko
- * Date: 13.09.2015
- * Time: 21:27
+ * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @author     Marko Cupic
+ * @package    RSZ Benutzerverwaltung
+ * @license    MIT
+ * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
+ *
  */
+
+
 $GLOBALS['TL_LANG']['tl_settings']['rsz_benutzerverwaltung'] = "RSZ Benutzerverwaltung";
 $GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_sac_sektion'] = "SAC-Sektionen";
 $GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_kategorie'] = "Wettkampfkatergorien";

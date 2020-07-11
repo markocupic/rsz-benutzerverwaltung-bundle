@@ -3,9 +3,9 @@
 /**
  * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
  * @author     Marko Cupic
- * @package    Office365Bundle for Schule Ettiswil
+ * @package    RSZ Benutzerverwaltung
  * @license    MIT
- * @see        https://github.com/markocupic/office365-bundle
+ * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  *
  */
 

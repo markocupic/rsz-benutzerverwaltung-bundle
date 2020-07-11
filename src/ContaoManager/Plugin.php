@@ -3,9 +3,9 @@
 /**
  * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
  * @author     Marko Cupic
- * @package    RSZ AthletenumfrageBundle for Schule Ettiswil
+ * @package    RSZ Benutzerverwaltung
  * @license    MIT
- * @see        https://github.com/markocupic/rsz-athletenumfrage-bundle
+ * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  *
  */
 
