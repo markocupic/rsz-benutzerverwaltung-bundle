@@ -22,6 +22,7 @@ use Contao\FilesModel;
 use Contao\Folder;
 use Contao\MemberModel;
 use Contao\Message;
+use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
 
@@ -39,26 +40,31 @@ class RszUser
     /**
      * @var string
      */
-    public $userDir = '';
+    private $projectDir;
 
     /**
      * @var string
      */
-    private static $defaultAvatarFemale = 'files/theme-files/theme_pics/avatars/female-1.png';
+    const USER_DIRECTORY = 'files/Dateiablage/user_dir';
 
     /**
      * @var string
      */
-    private static $defaultAvatarMale = 'files/theme-files/theme_pics/avatars/male-1.png';
+    const DEFAULT_AVATAR_FEMALE = 'files/theme-files/theme_pics/avatars/female-1.png';
+
+    /**
+     * @var string
+     */
+    const DEFAULT_AVATAR_MALE = 'files/theme-files/theme_pics/avatars/male-1.png';
 
     /**
      * RszUser constructor.
      */
     public function __construct()
     {
-        $this->User = BackendUser::getInstance();
+        $this->projectDir = System::getContainer()->getParameter('kernel.project_dir');
 
-        $this->userDir = Config::get('uploadPath');
+        $this->User = BackendUser::getInstance();
     }
 
     /**
@@ -81,16 +87,16 @@ class RszUser
             {
                 if ($objUser->gender == 'female')
                 {
-                    return self::$defaultAvatarFemale;
+                    return self::DEFAULT_AVATAR_FEMALE;
                 }
                 else
                 {
-                    return self::$defaultAvatarMale;
+                    return self::DEFAULT_AVATAR_MALE;
                 }
             }
         }
 
-        return self::$defaultAvatarMale;
+        return self::DEFAULT_AVATAR_MALE;
     }
 
     /**
@@ -103,11 +109,11 @@ class RszUser
     public function maintainUserProperties()
     {
         // remove  orphaned user directories from filesystem
-        $this->deleteOrphanedDirectories($this->userDir . '/athlet', 'Athlet');
-        $this->deleteOrphanedDirectories($this->userDir . '/trainer', 'Trainer');
-        $this->deleteOrphanedDirectories($this->userDir . '/vorstand', 'Vorstand');
-        $this->deleteOrphanedDirectories($this->userDir . '/website', 'Website');
-        $this->deleteOrphanedDirectories($this->userDir . '/eltern', 'Eltern');
+        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/athlet', 'Athlet');
+        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/trainer', 'Trainer');
+        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/vorstand', 'Vorstand');
+        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/website', 'Website');
+        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/eltern', 'Eltern');
 
         //synchronize all tl_user.passwords with tl_member.passwords
         $objUser = UserModel::findAll();
@@ -121,6 +127,7 @@ class RszUser
             {
                 continue;
             }
+
             // create user directories
             $arrGroups = [
                 'Athlet',
@@ -129,22 +136,23 @@ class RszUser
                 'Website',
                 'Eltern',
             ];
-            if ($objUser->groups != "" && $objUser->funktion != '')
+            if (!empty($objUser->funktion))
             {
                 foreach ($arrGroups as $strFunction)
                 {
-                    if (in_array($strFunction, deserialize($objUser->funktion, true)))
+                    if (in_array($strFunction, StringUtil::deserialize($objUser->funktion, true)))
                     {
-                        $strFolder = $this->userDir . '/' . strtolower($strFunction) . '/' . $objUser->username . '/my_profile/my_pics';
-                        if (!file_exists(TL_ROOT . '/' . $strFolder))
+                        $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username . '/my_profile/my_pics';
+                        if (!file_exists($this->projectDir . '/' . $strFolder))
                         {
                             // create user directory
                             new Folder($strFolder);
                         }
+
                         // add filemount for the user directory
-                        $strFolder = $this->userDir . '/' . strtolower($strFunction) . '/' . $objUser->username;
+                        $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
-                        $arrFileMounts = unserialize($objUser->filemounts);
+                        $arrFileMounts = StringUtil::deserialize($objUser->filemounts, true);
                         $arrFileMounts[] = $objFile->uuid;
                         $objUser->filemounts = serialize(array_unique($arrFileMounts));
                         $objUser->inherit = 'extend';
@@ -252,15 +260,15 @@ class RszUser
      */
     public function deleteOrphanedDirectories($strFolder, $strGroup)
     {
-        if (!file_exists(TL_ROOT . '/' . $strFolder))
+        if (!file_exists($this->projectDir . '/' . $strFolder))
         {
             return;
         }
 
-        foreach (scan(TL_ROOT . '/' . $strFolder) as $strUserDir)
+        foreach (scan($this->projectDir . '/' . $strFolder) as $strUserDir)
         {
             $objUser = UserModel::findByUsername($strUserDir);
-            if (!$objUser && is_dir(TL_ROOT . '/' . $strFolder . '/' . $strUserDir))
+            if (!$objUser && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
             {
                 $objFolder = new Folder($strFolder . '/' . $strUserDir);
                 $objFolder->delete();
@@ -269,7 +277,7 @@ class RszUser
             // display message if a directory must be deleted
             if ($this->User->isAdmin)
             {
-                if ($objUser !== null && is_dir(TL_ROOT . '/' . $strFolder . '/' . $strUserDir))
+                if ($objUser !== null && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
                 {
                     $arrGroups = deserialize($objUser->funktion, true);
                     if (!in_array($strGroup, $arrGroups))
@@ -299,8 +307,11 @@ class RszUser
             return;
         }
 
+        // Log
         System::log(sprintf('DELETE FROM tl_member WHERE id=%s', $objMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
-        Message::addInfo(sprintf('Das mit Benutzer verknüpfte Mitglied "%s &s" wurde automatisch gelöscht.', $objMember->firstname, $objMember->lastname));
+
+        // Show message in the backend
+        Message::addInfo(sprintf('Das mit dem Benutzer verknüpfte Mitglied "%s %s" wurde automatisch mitgelöscht.', $objMember->firstname, $objMember->lastname));
         $objMember->delete();
 
         // delete user directories
@@ -309,16 +320,14 @@ class RszUser
             'Trainer'  => 1,
             'Vorstand' => 7,
         ];
-        if ($objUser->groups != "")
+
+        foreach ($arrGroups as $groupName => $groupId)
         {
-            foreach ($arrGroups as $groupName => $groupId)
+            $strFolder = 'tl_files/Dateiablage/user_dir/' . strtolower($groupName) . '/' . $objUser->username;
+            if (file_exists($this->projectDir . '/' . $strFolder))
             {
-                $strFolder = 'tl_files/Dateiablage/user_dir/' . strtolower($groupName) . '/' . $objUser->username;
-                if (file_exists(TL_ROOT . '/' . $strFolder))
-                {
-                    $objFolder = new Folder($strFolder);
-                    $objFolder->delete();
-                }
+                $objFolder = new Folder($strFolder);
+                $objFolder->delete();
             }
         }
     }
