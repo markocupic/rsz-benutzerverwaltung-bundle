@@ -128,7 +128,7 @@ class RszUser
         }
         while ($objUser->next())
         {
-            if (!$objUser->isRSZ)
+            if (!$objUser->isRSZ || empty($objUser->username) || empty($objUser->name))
             {
                 continue;
             }
@@ -219,7 +219,7 @@ class RszUser
                     $objNewMember = new MemberModel();
 
                     // Sync tl_member with tl_user
-                    $objDbMember->setRow($set);
+                    $objNewMember->setRow($set);
                     $objNewMember->save();
 
                     $objUser->assignedMember = $objNewMember->id;
@@ -268,7 +268,7 @@ class RszUser
             {
                 //$objFolder = new Folder($strFolder . '/' . $strUserDir);
                 //$objFolder->delete();
-                $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da tl_user.' . $objUser->username . ' gelöscht wurde.';
+                $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da tl_user.' . $strUserDir . ' gelöscht wurde.';
                 $this->addInfoFlashMessage($msg);
             }
 
