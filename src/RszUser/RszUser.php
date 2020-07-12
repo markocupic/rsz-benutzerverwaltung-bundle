@@ -90,7 +90,7 @@ class RszUser
             }
             else
             {
-                if ($objUser->gender == 'female')
+                if ($objUser->gender === 'female')
                 {
                     return self::DEFAULT_AVATAR_FEMALE;
                 }
@@ -105,22 +105,22 @@ class RszUser
     }
 
     /**
+     * check for orphaned user directories from filesystem
      * onload callback for tl_user
      * sync tl_user with tl_member
      * create user directories
      * add filemounts for the user directories
-     * remove  orphaned user directories from filesystem
      */
     public function maintainUserProperties(): void
     {
-        // remove  orphaned user directories from filesystem
-        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/athlet', 'Athlet');
-        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/trainer', 'Trainer');
-        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/vorstand', 'Vorstand');
-        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/website', 'Website');
-        $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/eltern', 'Eltern');
+        // Remove  orphaned user directories from filesystem
+        $this->checkForOrphanedDirectories('athlet');
+        $this->checkForOrphanedDirectories('trainer');
+        $this->checkForOrphanedDirectories('vorstand');
+        $this->checkForOrphanedDirectories('website');
+        $this->checkForOrphanedDirectories('eltern');
 
-        //synchronize all tl_user.passwords with tl_member.passwords
+        // Synchronize all tl_user.passwords with tl_member.passwords
         $objUser = UserModel::findAll();
         if ($objUser === null)
         {
@@ -133,7 +133,7 @@ class RszUser
                 continue;
             }
 
-            // create user directories
+            // Create user directories
             $arrGroups = [
                 'Athlet',
                 'Trainer',
@@ -150,11 +150,11 @@ class RszUser
                         $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username . '/my_profile/my_pics';
                         if (!file_exists($this->projectDir . '/' . $strFolder))
                         {
-                            // create user directory
+                            // Create user directory
                             new Folder($strFolder);
                         }
 
-                        // add filemount for the user directory
+                        // Add filemount for the user directory
                         $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
                         $arrFileMounts = StringUtil::deserialize($objUser->filemounts, true);
@@ -166,11 +166,11 @@ class RszUser
                 }
             }
 
-            // collect data
+            // Collect data
             unset($firstname, $lastname);
             $arrName = explode(" ", $objUser->name);
 
-            //bei 2-teiligen Nachnamen (z.B. Von Arx)
+            // Bei 2-teiligen Nachnamen (z.B. Von Arx)
             if (count($arrName) == 3)
             {
                 $lastname = $arrName[0] . ' ' . $arrName[1];
@@ -201,12 +201,12 @@ class RszUser
                 "login"       => 1,
             ];
 
-            // get assigned member
+            // Get assigned member
             $objDbMember = MemberModel::findByPk($objUser->assignedMember);
 
             if ($objDbMember !== null)
             {
-                // sync tl_member with tl_user
+                // Sync tl_member with tl_user
                 $objDbMember->setRow($set);
                 $objDbMember->save();
             }
@@ -214,16 +214,12 @@ class RszUser
             {
                 try
                 {
-                    // create new member
+                    // Create new member
                     $set['dateAdded'] = time();
                     $objNewMember = new MemberModel();
 
-                    // sync tl_member with tl_user
-                    foreach ($set as $k => $v)
-                    {
-                        $objNewMember->{$k} = $v;
-                    }
-
+                    // Sync tl_member with tl_user
+                    $objDbMember->setRow($set);
                     $objNewMember->save();
 
                     $objUser->assignedMember = $objNewMember->id;
@@ -231,7 +227,7 @@ class RszUser
 
                     System::log(sprintf('A new entry "tl_member.id=%s" has been created', $objNewMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
 
-                    // notify Admin
+                    // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
                     $link = sprintf('http://%s/contao?do=user&act=edit&id=%s', Environment::get('httpHost'), $objUser->id);
                     $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, Environment::get('httpHost'), $link);
@@ -253,12 +249,13 @@ class RszUser
     }
 
     /**
-     * Delete orphaned directories
+     * Chek for orphaned directories
      * @param $strFolder
      * @param $strGroup
      */
-    public function deleteOrphanedDirectories($strFolder, $strGroup)
+    public function checkForOrphanedDirectories($strFunktion)
     {
+        $strFolder = static::USER_DIRECTORY . '/' . $strFunktion;
         if (!file_exists($this->projectDir . '/' . $strFolder))
         {
             return;
@@ -275,15 +272,16 @@ class RszUser
                 $this->addInfoFlashMessage($msg);
             }
 
-            // display message if a directory must be deleted
+            // Display message if a directory must be deleted
             if ($this->User->isAdmin)
             {
                 if ($objUser !== null && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
                 {
-                    $arrGroups = deserialize($objUser->funktion, true);
-                    if (!in_array($strGroup, $arrGroups))
+                    $arrGroups = array_map('strtolower', deserialize($objUser->funktion, true));
+
+                    if (!in_array($strFunktion, $arrGroups))
                     {
-                        $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da ' . $objUser->username . ' keine ' . $strGroup . '-Funktion innehat!';
+                        $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da ' . $objUser->username . ' keine ' . ucfirst($strFunktion) . '-Funktion (mehr) innehat!';
                         $this->addInfoFlashMessage($msg);
                     }
                 }
