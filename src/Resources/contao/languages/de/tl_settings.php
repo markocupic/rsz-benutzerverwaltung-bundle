@@ -9,8 +9,10 @@
  *
  */
 
-
+// Legend
 $GLOBALS['TL_LANG']['tl_settings']['rsz_benutzerverwaltung'] = "RSZ Benutzerverwaltung";
+
+// Fields
 $GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_sac_sektion'] = "SAC-Sektionen";
 $GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_kategorie'] = "Wettkampfkatergorien";
 $GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_funktion'] = "Funktionen";

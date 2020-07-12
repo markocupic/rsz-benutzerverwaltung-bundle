@@ -24,31 +24,37 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_sac_se
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_kategorie'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_kategorie'],
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_funktion'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_funktion'],
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_niveau'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_niveau'],
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_trainingsgruppe'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainingsgruppe'],
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_trainerqualifikation'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainerqualifikation'],
     'inputType' => 'text',
     'eval'      => ['tl_class' => 'long clr']
 ];
+
 $GLOBALS['TL_DCA']['tl_settings']['fields']['mcupic_be_benutzerverwaltung_id_group_address_admin'] = [
     'label'     => &$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_id_group_address_admin'],
     'inputType' => 'text',

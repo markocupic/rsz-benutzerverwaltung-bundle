@@ -59,14 +59,14 @@ class RszAdressenDownload extends BackendModule
         $sheet = $spreadsheet->getActiveSheet();
 
         $arr_fields = [
-            "gender", "vorname", "name", "dateOfBirth", "street", "postal", "city", "telephone", "mobile",
-            "fax", "email", "alternate_email", "url", "sac_sektion", "funktion", "niveau", "trainingsgruppe",
-            "trainerqualifikation"
+            "gender", "name", "street", "postal", "city", "dateOfBirth", "telephone", "mobile", "fax",
+            "username", "email", "alternate_email", "url", "sac_sektion", "funktion", "niveau", "trainingsgruppe", "nationalmannschaft",
+            "trainerqualifikation", "trainerFromGroup"
         ];
 
         if ($this->User->isAdmin)
         {
-            $arr_fields[] = 'username';
+            $arr_fields[] = 'ahv';
         }
 
         // Get header
@@ -93,53 +93,11 @@ class RszAdressenDownload extends BackendModule
                     $value = Date::parse("Y-m-d", $value);
                     $sheet->setCellValueByColumnAndRow($col, $row, $value);
                 }
-                elseif ($field == "funktion")
+                elseif (!empty($objUser->{$field}) && is_array(unserialize($objUser->{$field})))
                 {
-                    $value = !empty($value) ? implode(', ', StringUtil::deserialize($value)) : '';
-                    $sheet->setCellValueByColumnAndRow($col, $row, $value);
-                }
-                elseif ($field == "vorname")
-                {
-                    $arr_name = explode(" ", $objUser->name);
-                    if ($arr_name[2])
-                    {
-                        $first_name = $arr_name[2];
-                    }
-                    else
-                    {
-                        $first_name = $arr_name[1];
-                    }
-                    $sheet->setCellValueByColumnAndRow($col, $row, $first_name);
-                }
-                elseif ($field == "name")
-                {
-                    $arr_name = explode(" ", $objUser->name);
-                    if ($arr_name[2])
-                    {
-                        $last_name = $arr_name[0] . " " . $arr_name[1];
-                    }
-                    else
-                    {
-                        $last_name = $arr_name[0];
-                    }
-                    $sheet->setCellValueByColumnAndRow($col, $row, $last_name);
-                }
-                elseif ($field == "trainerqualifikation")
-                {
-                    $value = StringUtil::deserialize($value, true);
-                    if (empty($value))
-                    {
-                        $value = "";
-                    }
-                    else
-                    {
-                        $string = "";
-                        foreach ($value as $key => $content)
-                        {
-                            $string .= $content . ", ";
-                        }
-                        $value = $string;
-                    }
+                    $arrValues = unserialize($objUser->{$field});
+                    $arrValues = array_filter($arrValues, 'strlen');
+                    $value = implode(', ', $arrValues);
                     $sheet->setCellValueByColumnAndRow($col, $row, $value);
                 }
                 else

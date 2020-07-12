@@ -9,14 +9,8 @@
  *
  */
 
-/**
- * Backend modules
- */
-$GLOBALS['BE_MOD']['accounts']['rsz_adressen_download'] = array(
-    'callback' => Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload::class
-);
-
-
-
-
-
+// Fields
+$GLOBALS['TL_DCA']['tl_member']['fields']['dateOfBirth'] = [
+    'sorting' => true,
+    'flag' => 6
+];

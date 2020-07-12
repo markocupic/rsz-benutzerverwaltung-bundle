@@ -11,7 +11,6 @@
 
 namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Widget;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
@@ -22,26 +21,6 @@ use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
  */
 class AddCustomRegexpListener implements ServiceAnnotationInterface
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * AddCustomRegexpListener constructor.
-     * @param ContaoFramework $framework
-     * @param RequestStack $requestStack
-     */
-    public function __construct(ContaoFramework $framework, RequestStack $requestStack)
-    {
-        $this->framework = $framework;
-        $this->requestStack = $requestStack;
-    }
 
     /**
      * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)

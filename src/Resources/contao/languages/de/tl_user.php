@@ -9,6 +9,17 @@
  *
  */
 
+
+// Legends
+$GLOBALS['TL_LANG']['tl_user']['contact_legend'] = 'Kontaktangaben';
+$GLOBALS['TL_LANG']['tl_user']['admin_legend'] = 'Administrator';
+$GLOBALS['TL_LANG']['tl_user']['information_legend'] = 'Weitere Angaben zur Person';
+$GLOBALS['TL_LANG']['tl_user']['trainer_legend'] = 'Trainerangaben';
+$GLOBALS['TL_LANG']['tl_user']['athlete_legend'] = 'Athletenangaben';
+$GLOBALS['TL_LANG']['tl_user']['extended_data'] = 'Erweiterte Angaben';
+
+
+// Fields
 $GLOBALS['TL_LANG']['tl_user']['username'] = ['Benutzername für Backend Login', 'Vorname und Nachname in Kleinbuchstaben ohne Leerzeichen: z.B. hansmuster'];
 $GLOBALS['TL_LANG']['tl_user']['isRSZ'] = ['Teil des RSZ', 'Gehört der Benutzer zum RSZ?'];
 $GLOBALS['TL_LANG']['tl_user']['gender'] = ['Geschlecht', 'Bitte wählen Sie das Geschlecht.'];
@@ -28,6 +39,7 @@ $GLOBALS['TL_LANG']['tl_user']['alternate_email_2'] = ['weitere E-Mail-Adresse d
 $GLOBALS['TL_LANG']['tl_user']['nationalmannschaft'] = ['Mitglied Nationalmannschaft', ''];
 $GLOBALS['TL_LANG']['tl_user']['funktionsbeschreibung'] = ['Genauere Angaben zur Funktion', 'Weitere Aufgaben im Verein, usw.'];
 $GLOBALS['TL_LANG']['tl_user']['trainerqualifikation'] = ['J&S-Leiterstatus', 'Falls du über eine gültige J&S-Qualifikation, verfügst.'];
+$GLOBALS['TL_LANG']['tl_user']['trainerFromGroup'] = ['Trainer der Gruppe', 'Geben Sie an, ob der Leiter in einer oder mehreren Gruppen eine Trainingsfunktion hat.'];
 $GLOBALS['TL_LANG']['tl_user']['dateOfBirth'] = ['Geburtsdatum', 'Geburtsdatum: YYYY-MM-DD'];
 $GLOBALS['TL_LANG']['tl_user']['avatar'] = ['Portraitbild', 'Erstelle auf http://www.avataro.de/ kostenlos deinen Avatar und lade ihn über die Dateiverwaltung in dein Benutzerverzeichnis.'];
 $GLOBALS['TL_LANG']['tl_user']['sac_sektion'] = ['Mitglied in SAC-Sektion', 'Geben Sie eine SAC-Sektion an.'];
@@ -39,41 +51,3 @@ $GLOBALS['TL_LANG']['tl_user']['link_digitalrock'] = ['Link zu Digitalrock', 'Li
 $GLOBALS['TL_LANG']['tl_user']['fe_sorting'] = ['Sortierrang in der Mitgliederliste im Frontend', 'Geben  Sie eine Zahl ein. Je kleiner die Zahl, umso weiter oben die Anzeige im Frontend.'];
 $GLOBALS['TL_LANG']['tl_user']['ahv_nr'] = ['AHV-Nr. (13-stellig)', 'z.B. 756.1234.5678.95'];
 $GLOBALS['TL_LANG']['tl_user']['iban'] = ['Bankverbindung, IBAN-Nr.', 'im Format CH31 8123 9000 0012 4568 9'];
-
-if ($_GET["do"] == "rsz_benutzerverwaltung")
-{
-    ;
-}
-elseif ($_GET["do"] == "group")
-{
-    ;
-}
-elseif ($_GET["do"] == "login")
-{
-    ;
-}
-else
-{
-    return;
-}
-
-/**
- * Fields
- */
-/**
- * Legends
- */
-$GLOBALS['TL_LANG']['tl_user']['name_legend'] = 'Name, Adresse und Geburtsdatum';
-$GLOBALS['TL_LANG']['tl_user']['contact_legend'] = 'Kontaktangaben';
-$GLOBALS['TL_LANG']['tl_user']['backend_legend'] = 'Backend-Einstellungen';
-$GLOBALS['TL_LANG']['tl_user']['password_legend'] = 'Passwort-Einstellungen';
-$GLOBALS['TL_LANG']['tl_user']['admin_legend'] = 'Administrator';
-$GLOBALS['TL_LANG']['tl_user']['information_legend'] = 'Weitere Angaben zur Person';
-$GLOBALS['TL_LANG']['tl_user']['trainer'] = 'Trainerangaben';
-$GLOBALS['TL_LANG']['tl_user']['athlete'] = 'Athletenangaben';
-$GLOBALS['TL_LANG']['tl_user']['extended_data'] = 'Erweiterte Angaben';
-
-/**
- * Buttons und links
- */
-$GLOBALS['TL_LANG']['tl_user']['download_addresses'] = ['RSZ Adressen downloaden', 'Adressen-Download im XLS-Format'];

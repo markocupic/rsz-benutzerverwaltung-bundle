@@ -9,11 +9,33 @@
  *
  */
 
+declare(strict_types=1);
+
+namespace Markocupic\RszBenutzerverwaltungBundle\RszUser;
+
+use Contao\BackendUser;
+use Contao\Config;
+use Contao\DataContainer;
+use Contao\Email;
+use Contao\Environment;
+use Contao\FilesModel;
+use Contao\Folder;
+use Contao\MemberModel;
+use Contao\Message;
+use Contao\System;
+use Contao\UserModel;
+
 /**
- * Class RSZUser
+ * Class RszUser
+ * @package Markocupic\RszBenutzerverwaltungBundle\RszUser
  */
-class RSZUser extends System
+class RszUser
 {
+    /**
+     * @var BackendUser|\Contao\User
+     */
+    protected $User;
+
     /**
      * @var string
      */
@@ -29,13 +51,14 @@ class RSZUser extends System
      */
     private static $defaultAvatarMale = 'files/theme-files/theme_pics/avatars/male-1.png';
 
+    /**
+     * RszUser constructor.
+     */
     public function __construct()
     {
-        parent::__construct();
-        $this->import('Database');
-        $this->import('BackendUser', 'User');
+        $this->User = BackendUser::getInstance();
 
-        $this->userDir = $GLOBALS['TL_CONFIG']['uploadPath'] . '/Dateiablage/user_dir';
+        $this->userDir = Config::get('uploadPath');
     }
 
     /**
@@ -43,12 +66,12 @@ class RSZUser extends System
      */
     public static function getAvatar($userId)
     {
-        $objUser = \UserModel::findByPk($userId);
+        $objUser = UserModel::findByPk($userId);
         if ($objUser != null)
         {
             if ($objUser->avatar != '')
             {
-                $objFile = \FilesModel::findByUuid($objUser->avatar);
+                $objFile = FilesModel::findByUuid($objUser->avatar);
                 if ($objFile !== null)
                 {
                     return $objFile->path;
@@ -87,7 +110,7 @@ class RSZUser extends System
         $this->deleteOrphanedDirectories($this->userDir . '/eltern', 'Eltern');
 
         //synchronize all tl_user.passwords with tl_member.passwords
-        $objUser = \UserModel::findAll();
+        $objUser = UserModel::findAll();
         if ($objUser === null)
         {
             return;
@@ -120,7 +143,7 @@ class RSZUser extends System
                         }
                         // add filemount for the user directory
                         $strFolder = $this->userDir . '/' . strtolower($strFunction) . '/' . $objUser->username;
-                        $objFile = \FilesModel::findByPath($strFolder);
+                        $objFile = FilesModel::findByPath($strFolder);
                         $arrFileMounts = unserialize($objUser->filemounts);
                         $arrFileMounts[] = $objFile->uuid;
                         $objUser->filemounts = serialize(array_unique($arrFileMounts));
@@ -168,7 +191,7 @@ class RSZUser extends System
             if ($objUser->name != '' && $objUser->username != '')
             {
                 // get assigned member
-                $objDbMember = \MemberModel::findByUsername($objUser->username, ['uncached' => true]);
+                $objDbMember = MemberModel::findByUsername($objUser->username, ['uncached' => true]);
 
                 if ($objDbMember !== null)
                 {
@@ -185,26 +208,37 @@ class RSZUser extends System
                     {
                         // create new member
                         $set['dateAdded'] = time();
-                        $objNewMember = new \MemberModel();
+                        $objNewMember = new MemberModel();
+
                         // sync tl_member with tl_user
                         foreach ($set as $k => $v)
                         {
                             $objNewMember->{$k} = $v;
                         }
+
                         $objNewMember->save();
+
                         $objUser->assignedMember = $objNewMember->id;
                         $objUser->save();
-                        $this->log(sprintf('A new entry "tl_member.id=%s" has been created', $objNewMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
+
+                        System::log(sprintf('A new entry "tl_member.id=%s" has been created', $objNewMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
 
                         // notify Admin
-                        $subject = sprintf('Neuer Backend User auf %s', \Environment::get('httpHost'));
-                        $link = sprintf('http://%s/contao/main.php?do=rsz_benutzerverwaltung&act=edit&id=%s', \Environment::get('httpHost'), $objUser->id);
-                        $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, \Environment::get('httpHost'), $link);
-                        mail($GLOBALS['TL_CONFIG']['adminEmail'], $subject, $msg);
-                        \Message::addConfirmation('Ein neues Mitglied mit dem Benutzernamen ' . $objNewMember->username . ' wurde automatisch erstellt');
+                        $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
+                        $link = sprintf('http://%s/contao?do=user&act=edit&id=%s', Environment::get('httpHost'), $objUser->id);
+                        $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, Environment::get('httpHost'), $link);
+
+                        // Send E-Mail
+                        $objEmail = new Email();
+                        $objEmail->subject = $subject;
+                        $objEmail->text = $msg;
+                        $objEmail->from = Config::get('adminEmail');
+                        $objEmail->sendTo(Config::get('adminEmail'));
+
+                        Message::addConfirmation('Ein neues Mitglied mit dem Benutzernamen ' . $objNewMember->username . ' wurde automatisch erstellt');
                     } catch (\Exception $e)
                     {
-                        \Message::addError($e->getMessage());
+                        Message::addError($e->getMessage());
                         $_SESSION['TL_ERROR'][] = $e->getMessage();
                     }
                 }
@@ -225,10 +259,10 @@ class RSZUser extends System
 
         foreach (scan(TL_ROOT . '/' . $strFolder) as $strUserDir)
         {
-            $objUser = \UserModel::findByUsername($strUserDir);
+            $objUser = UserModel::findByUsername($strUserDir);
             if (!$objUser && is_dir(TL_ROOT . '/' . $strFolder . '/' . $strUserDir))
             {
-                $objFolder = new \Folder($strFolder . '/' . $strUserDir);
+                $objFolder = new Folder($strFolder . '/' . $strUserDir);
                 $objFolder->delete();
             }
 
@@ -253,17 +287,20 @@ class RSZUser extends System
      */
     public function deleteUserFromTlMember(DataContainer $dc)
     {
-        $objUser = \UserModel::findByPk($dc->id);
+        $objUser = UserModel::findByPk($dc->id);
         if ($objUser === null)
         {
             return;
         }
-        $objMember = \MemberModel::findByUsername($objUser->username);
+
+        $objMember = MemberModel::findByPk($objUser->assignedMember);
         if ($objMember === null)
         {
             return;
         }
-        $this->log(sprintf('DELETE FROM tl_member WHERE id=%s', $objMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
+
+        System::log(sprintf('DELETE FROM tl_member WHERE id=%s', $objMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
+        Message::addInfo(sprintf('Das mit Benutzer verknüpfte Mitglied "%s &s" wurde automatisch gelöscht.', $objMember->firstname, $objMember->lastname));
         $objMember->delete();
 
         // delete user directories
