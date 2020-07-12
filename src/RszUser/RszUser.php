@@ -21,7 +21,6 @@ use Contao\Environment;
 use Contao\FilesModel;
 use Contao\Folder;
 use Contao\MemberModel;
-use Contao\Message;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
@@ -58,6 +57,11 @@ class RszUser
     const DEFAULT_AVATAR_MALE = 'files/theme-files/theme_pics/avatars/male-1.png';
 
     /**
+     * @var string
+     */
+    const STR_INFO_FLASH_TYPE = 'contao.BE.info';
+
+    /**
      * RszUser constructor.
      */
     public function __construct()
@@ -68,9 +72,10 @@ class RszUser
     }
 
     /**
+     * @param $userId
      * @return string
      */
-    public static function getAvatar($userId)
+    public static function getAvatar($userId): string
     {
         $objUser = UserModel::findByPk($userId);
         if ($objUser != null)
@@ -106,7 +111,7 @@ class RszUser
      * add filemounts for the user directories
      * remove  orphaned user directories from filesystem
      */
-    public function maintainUserProperties()
+    public function maintainUserProperties(): void
     {
         // remove  orphaned user directories from filesystem
         $this->deleteOrphanedDirectories(static::USER_DIRECTORY . '/athlet', 'Athlet');
@@ -196,67 +201,61 @@ class RszUser
                 "login"       => 1,
             ];
 
-            if ($objUser->name != '' && $objUser->username != '')
-            {
-                // get assigned member
-                $objDbMember = MemberModel::findByUsername($objUser->username, ['uncached' => true]);
+            // get assigned member
+            $objDbMember = MemberModel::findByPk($objUser->assignedMember);
 
-                if ($objDbMember !== null)
+            if ($objDbMember !== null)
+            {
+                // sync tl_member with tl_user
+                $objDbMember->setRow($set);
+                $objDbMember->save();
+            }
+            else
+            {
+                try
                 {
+                    // create new member
+                    $set['dateAdded'] = time();
+                    $objNewMember = new MemberModel();
+
                     // sync tl_member with tl_user
                     foreach ($set as $k => $v)
                     {
-                        $objDbMember->{$k} = $v;
+                        $objNewMember->{$k} = $v;
                     }
-                    $objDbMember->save();
-                }
-                else
+
+                    $objNewMember->save();
+
+                    $objUser->assignedMember = $objNewMember->id;
+                    $objUser->save();
+
+                    System::log(sprintf('A new entry "tl_member.id=%s" has been created', $objNewMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
+
+                    // notify Admin
+                    $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
+                    $link = sprintf('http://%s/contao?do=user&act=edit&id=%s', Environment::get('httpHost'), $objUser->id);
+                    $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, Environment::get('httpHost'), $link);
+
+                    // Send E-Mail
+                    $objEmail = new Email();
+                    $objEmail->subject = $subject;
+                    $objEmail->text = $msg;
+                    $objEmail->from = Config::get('adminEmail');
+                    $objEmail->sendTo(Config::get('adminEmail'));
+
+                    $this->addInfoFlashMessage('Ein neues Mitglied mit dem Benutzernamen ' . $objNewMember->username . ' wurde automatisch erstellt');
+                } catch (\Exception $e)
                 {
-                    try
-                    {
-                        // create new member
-                        $set['dateAdded'] = time();
-                        $objNewMember = new MemberModel();
-
-                        // sync tl_member with tl_user
-                        foreach ($set as $k => $v)
-                        {
-                            $objNewMember->{$k} = $v;
-                        }
-
-                        $objNewMember->save();
-
-                        $objUser->assignedMember = $objNewMember->id;
-                        $objUser->save();
-
-                        System::log(sprintf('A new entry "tl_member.id=%s" has been created', $objNewMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
-
-                        // notify Admin
-                        $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
-                        $link = sprintf('http://%s/contao?do=user&act=edit&id=%s', Environment::get('httpHost'), $objUser->id);
-                        $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, Environment::get('httpHost'), $link);
-
-                        // Send E-Mail
-                        $objEmail = new Email();
-                        $objEmail->subject = $subject;
-                        $objEmail->text = $msg;
-                        $objEmail->from = Config::get('adminEmail');
-                        $objEmail->sendTo(Config::get('adminEmail'));
-
-                        Message::addConfirmation('Ein neues Mitglied mit dem Benutzernamen ' . $objNewMember->username . ' wurde automatisch erstellt');
-                    } catch (\Exception $e)
-                    {
-                        Message::addError($e->getMessage());
-                        $_SESSION['TL_ERROR'][] = $e->getMessage();
-                    }
+                    $this->addInfoFlashMessage($e->getMessage());
                 }
             }
         }
     }
 
     /**
-     * deleteOrphanedDirectories
+     * Delete orphaned directories
      * @param $strFolder
+     * @param $strGroup
      */
     public function deleteOrphanedDirectories($strFolder, $strGroup)
     {
@@ -270,8 +269,10 @@ class RszUser
             $objUser = UserModel::findByUsername($strUserDir);
             if (!$objUser && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
             {
-                $objFolder = new Folder($strFolder . '/' . $strUserDir);
-                $objFolder->delete();
+                //$objFolder = new Folder($strFolder . '/' . $strUserDir);
+                //$objFolder->delete();
+                $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da tl_user.' . $objUser->username . ' gelöscht wurde.';
+                $this->addInfoFlashMessage($msg);
             }
 
             // display message if a directory must be deleted
@@ -282,7 +283,8 @@ class RszUser
                     $arrGroups = deserialize($objUser->funktion, true);
                     if (!in_array($strGroup, $arrGroups))
                     {
-                        $_SESSION['TL_ERROR'][] = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da ' . $objUser->username . ' keine ' . $strGroup . '-Funktion innehat!<br>';
+                        $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da ' . $objUser->username . ' keine ' . $strGroup . '-Funktion innehat!';
+                        $this->addInfoFlashMessage($msg);
                     }
                 }
             }
@@ -293,7 +295,7 @@ class RszUser
      * Ondelete callback for tl_user
      * @param DataContainer $dc
      */
-    public function deleteUserFromTlMember(DataContainer $dc)
+    public function deleteAssignedMember(DataContainer $dc): void
     {
         $objUser = UserModel::findByPk($dc->id);
         if ($objUser === null)
@@ -311,24 +313,26 @@ class RszUser
         System::log(sprintf('DELETE FROM tl_member WHERE id=%s', $objMember->id), __CLASS__ . ' ' . __FUNCTION__ . '()', TL_GENERAL);
 
         // Show message in the backend
-        Message::addInfo(sprintf('Das mit dem Benutzer verknüpfte Mitglied "%s %s" wurde automatisch mitgelöscht.', $objMember->firstname, $objMember->lastname));
+        $this->addInfoFlashMessage(sprintf('Das mit dem Benutzer verknüpfte Mitglied "%s %s" wurde automatisch mitgelöscht.', $objMember->firstname, $objMember->lastname));
         $objMember->delete();
+    }
 
-        // delete user directories
-        $arrGroups = [
-            'Athlet'   => 10,
-            'Trainer'  => 1,
-            'Vorstand' => 7,
-        ];
-
-        foreach ($arrGroups as $groupName => $groupId)
+    /**
+     * @param string $msg
+     */
+    private function addInfoFlashMessage(string $msg): void
+    {
+        // Get flash bag
+        $session = System::getContainer()->get('session');
+        $flashBag = $session->getFlashBag();
+        $arrFlash = [];
+        if ($flashBag->has(static::STR_INFO_FLASH_TYPE))
         {
-            $strFolder = 'tl_files/Dateiablage/user_dir/' . strtolower($groupName) . '/' . $objUser->username;
-            if (file_exists($this->projectDir . '/' . $strFolder))
-            {
-                $objFolder = new Folder($strFolder);
-                $objFolder->delete();
-            }
+            $arrFlash = $flashBag->get(static::STR_INFO_FLASH_TYPE);
         }
+
+        $arrFlash[] = $msg;
+
+        $flashBag->set(static::STR_INFO_FLASH_TYPE, $arrFlash);
     }
 }

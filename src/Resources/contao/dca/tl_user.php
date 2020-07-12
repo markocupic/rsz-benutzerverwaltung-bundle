@@ -95,7 +95,7 @@ $GLOBALS['TL_DCA']['tl_user']['config']['onload_callback'][] = [
 
 $GLOBALS['TL_DCA']['tl_user']['config']['ondelete_callback'][] = [
     Markocupic\RszBenutzerverwaltungBundle\RszUser\RszUser::class,
-    'deleteUserFromTlMember'
+    'deleteAssignedMember'
 ];
 
 // Fields
