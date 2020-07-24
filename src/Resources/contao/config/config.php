@@ -12,7 +12,7 @@
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['accounts']['rsz_adressen_download'] = array(
+$GLOBALS['BE_MOD']['rsz_tools']['rsz_adressen_download'] = array(
     'callback' => Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload::class
 );
 

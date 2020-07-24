@@ -9,5 +9,8 @@
  *
  */
 
-
+/**
+ * Backend modules
+ */
+$GLOBALS['TL_LANG']['MOD']['rsz_tools'] = 'Rsz Tools';
 $GLOBALS['TL_LANG']['MOD']['rsz_adressen_download'] = ['RSZ Adressen Download', 'RSZ Adressen als Excel-Liste downloaden'];
