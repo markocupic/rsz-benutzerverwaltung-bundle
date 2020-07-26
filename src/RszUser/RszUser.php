@@ -44,17 +44,12 @@ class RszUser
     /**
      * @var string
      */
-    const USER_DIRECTORY = 'files/Dateiablage/user_dir';
+    const DEFAULT_AVATAR_FEMALE = 'bundles/markocupicrszbenutzerverwaltung/female-1.png';
 
     /**
      * @var string
      */
-    const DEFAULT_AVATAR_FEMALE = 'files/theme-files/theme_pics/avatars/female-1.png';
-
-    /**
-     * @var string
-     */
-    const DEFAULT_AVATAR_MALE = 'files/theme-files/theme_pics/avatars/male-1.png';
+    const DEFAULT_AVATAR_MALE = 'bundles/markocupicrszbenutzerverwaltung/male-1.png';
 
     /**
      * @var string
@@ -105,11 +100,13 @@ class RszUser
     }
 
     /**
-     * check for orphaned user directories from filesystem
+     * Check for orphaned user directories from filesystem
      * onload callback for tl_user
      * sync tl_user with tl_member
      * create user directories
      * add filemounts for the user directories
+     *
+     * @throws \Exception
      */
     public function maintainUserProperties(): void
     {
@@ -147,7 +144,7 @@ class RszUser
                 {
                     if (in_array($strFunction, StringUtil::deserialize($objUser->funktion, true)))
                     {
-                        $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username . '/my_profile/my_pics';
+                        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory') . '/' . strtolower($strFunction) . '/' . $objUser->username . '/my_profile/my_pics';
                         if (!file_exists($this->projectDir . '/' . $strFolder))
                         {
                             // Create user directory
@@ -155,7 +152,7 @@ class RszUser
                         }
 
                         // Add filemount for the user directory
-                        $strFolder = static::USER_DIRECTORY . '/' . strtolower($strFunction) . '/' . $objUser->username;
+                        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory') . '/' . strtolower($strFunction) . '/' . $objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
                         $arrFileMounts = StringUtil::deserialize($objUser->filemounts, true);
                         $arrFileMounts[] = $objFile->uuid;
@@ -229,7 +226,7 @@ class RszUser
 
                     // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
-                    $link = sprintf('http://%s/contao?do=user&act=edit&id=%s', Environment::get('httpHost'), $objUser->id);
+                    $link = sprintf('%s/contao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
                     $msg = sprintf('Hallo Admin' . chr(10) . '%s hat auf %s einen neuen Backend User angelegt.' . chr(10) . 'Hier geht es zum User: ' . chr(10) . '%s', $this->User->name, Environment::get('httpHost'), $link);
 
                     // Send E-Mail
@@ -249,13 +246,12 @@ class RszUser
     }
 
     /**
-     * Chek for orphaned directories
-     * @param $strFolder
-     * @param $strGroup
+     * Check for orphaned directories
+     * @param $strFunktion
      */
     public function checkForOrphanedDirectories($strFunktion)
     {
-        $strFolder = static::USER_DIRECTORY . '/' . $strFunktion;
+        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory') . '/' . $strFunktion;
         if (!file_exists($this->projectDir . '/' . $strFolder))
         {
             return;
@@ -266,8 +262,6 @@ class RszUser
             $objUser = UserModel::findByUsername($strUserDir);
             if (!$objUser && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
             {
-                //$objFolder = new Folder($strFolder . '/' . $strUserDir);
-                //$objFolder->delete();
                 $msg = $strFolder . '/' . $strUserDir . ' kann gelöscht werden, da tl_user.' . $strUserDir . ' gelöscht wurde.';
                 $this->addInfoFlashMessage($msg);
             }
@@ -277,7 +271,7 @@ class RszUser
             {
                 if ($objUser !== null && is_dir($this->projectDir . '/' . $strFolder . '/' . $strUserDir))
                 {
-                    $arrGroups = array_map('strtolower', deserialize($objUser->funktion, true));
+                    $arrGroups = array_map('strtolower', StringUtil::deserialize($objUser->funktion, true));
 
                     if (!in_array($strFunktion, $arrGroups))
                     {
