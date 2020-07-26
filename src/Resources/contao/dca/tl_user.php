@@ -118,17 +118,9 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['gender'] = [
     'sorting'   => true,
     'inputType' => 'select',
     'filter'    => true,
-    'options'   => [
-        'male',
-        'female'
-    ],
+    'options'   => ['male', 'female'],
     'reference' => &$GLOBALS['TL_LANG']['MSC'],
-    'eval'      => [
-        'includeBlankOption' => true,
-        'mandatory'          => true,
-        'maxlength'          => 255,
-        'tl_class'           => ''
-    ],
+    'eval'      => ['includeBlankOption' => true, 'mandatory' => true, 'maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(30) NOT NULL default ''",
 ];
 
@@ -138,10 +130,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['street'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'maxlength' => 255,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -151,10 +140,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['postal'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'maxlength' => 4,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['maxlength' => 4, 'tl_class' => ''],
     'sql'       => "varchar(32) NOT NULL default ''"
 ];
 
@@ -164,10 +150,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['city'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'maxlength' => 255,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -177,12 +160,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['telephone'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'rgxp'      => 'phone',
-        'maxlength' => 13,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'rgxp' => 'phone', 'maxlength' => 13, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -192,12 +170,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['mobile'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'rgxp'      => 'phone',
-        'maxlength' => 13,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'rgxp' => 'phone', 'maxlength' => 13, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -207,11 +180,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['alternate_email'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'rgxp'      => 'email',
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'rgxp' => 'email', 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -221,11 +190,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['alternate_email_2'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'rgxp'      => 'email',
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'rgxp' => 'email', 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -235,12 +200,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['url'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'rgxp'      => 'url',
-        'maxlength' => 255,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'rgxp' => 'url', 'maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -251,13 +211,8 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['kategorie'] = [
     'filter'    => true,
     'flag'      => 1,
     'inputType' => 'select',
-    'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_kategorie']),
-    'eval'      => [
-        'mandatory'          => false,
-        'maxlength'          => 255,
-        'tl_class'           => '',
-        'includeBlankOption' => true
-    ],
+    'options'   => explode(',', \Contao\System::getContainer()->getParameter('rsz-wettkampfkategorien')),
+    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => '', 'includeBlankOption' => true],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -267,11 +222,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['link_digitalrock'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'text',
-    'eval'      => [
-        'mandatory' => false,
-        'maxlength' => 255,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
 
@@ -283,10 +234,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['niveau'] = [
     'flag'      => 1,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_niveau']),
-    'eval'      => [
-        'includeBlankOption' => true,
-        'tl_class'           => ''
-    ],
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
 
@@ -298,12 +246,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerFromGroup'] = [
     'flag'      => 1,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainingsgruppe']),
-    'eval'      => [
-        'includeBlankOption' => true,
-        'tl_class'           => '',
-        'multiple'           => true,
-        'chosen'             => true,
-    ],
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => '', 'multiple' => true, 'chosen' => true],
     'sql'       => "blob NULL"
 ];
 
@@ -315,10 +258,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainingsgruppe'] = [
     'flag'      => 1,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainingsgruppe']),
-    'eval'      => [
-        'includeBlankOption' => true,
-        'tl_class'           => ''
-    ],
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
 
@@ -330,11 +270,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktion'] = [
     'flag'      => 1,
     'inputType' => 'checkbox',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_funktion']),
-    'eval'      => [
-        'mandatory' => false,
-        'multiple'  => true,
-        'tl_class'  => ''
-    ],
+    'eval'      => ['mandatory' => false, 'multiple' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
 
@@ -377,10 +313,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerqualifikation'] = [
     'flag'      => 1,
     'inputType' => 'checkbox',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainerqualifikation']),
-    'eval'      => [
-        'multiple' => true,
-        'tl_class' => ''
-    ],
+    'eval'      => ['multiple' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
 
@@ -391,10 +324,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['nationalmannschaft'] = [
     'filter'    => true,
     'flag'      => 1,
     'inputType' => 'select',
-    'options'   => [
-        '0' => 'false',
-        '1' => 'true'
-    ],
+    'options'   => ['0' => 'false', '1' => 'true'],
     'eval'      => ['tl_class' => ''],
     'sql'       => "int(1) NOT NULL default '0'"
 ];
@@ -404,13 +334,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['dateOfBirth'] = [
     'search'    => true,
     'sorting'   => true,
     'inputType' => 'text',
-    'eval'      => [
-        'maxlength'      => 10,
-        'datepicker'     => $this->getDatePickerString(),
-        'submitOnChange' => false,
-        'rgxp'           => 'date',
-        'tl_class'       => ' wizard'
-    ],
+    'eval'      => ['maxlength' => 10, 'datepicker' => $this->getDatePickerString(), 'submitOnChange' => false, 'rgxp' => 'date', 'tl_class' => ' wizard'],
     'sql'       => "int(14) NOT NULL default '0'"
 ];
 
@@ -421,11 +345,8 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['sac_sektion'] = [
     'filter'    => true,
     'flag'      => 1,
     'inputType' => 'select',
-    'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_sac_sektion']),
-    'eval'      => [
-        'maxlength' => 255,
-        'tl_class'  => ''
-    ],
+    'options'   => \Contao\System::getContainer()->getParameter('rsz-sac-sektionen'),
+    'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
 
@@ -435,9 +356,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['fe_sorting'] = [
     'sorting'   => true,
     'filter'    => true,
     'inputType' => 'text',
-    'eval'      => [
-        'rgxp' => 'digit',
-    ],
+    'eval'      => ['rgxp' => 'digit'],
     'sql'       => "int(14) NOT NULL default '999'"
 ];
 

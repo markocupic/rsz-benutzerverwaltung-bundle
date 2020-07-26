@@ -1,2 +1,3 @@
 parameters:
-  rszsacsektionen: [ Pilatus, Oberhasli, Rossberg, Titlis, Lucendro ]
+  rsz-sac-sektionen: [ Pilatus, Oberhasli, Rossberg, Titlis, Lucendro ]
+  rsz-wettkampfkategorien: [ "Damen U10", "Damen U12", "Damen U14", "Damen U16", "Damen U18", "Damen Elite", "Herren U10", "Herren U12", "Herren U14", "Herren U16", "Herren U18", "Herren Elite" ]
