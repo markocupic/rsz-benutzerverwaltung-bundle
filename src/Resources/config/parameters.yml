@@ -1,2 +1,2 @@
 parameters:
-  rsz-sac-sektionen: { Pilatus,  Oberhasli, Rossberg, Titlis, Lucendro }
+  rszsacsektionen: [ Pilatus, Oberhasli, Rossberg, Titlis, Lucendro ]
