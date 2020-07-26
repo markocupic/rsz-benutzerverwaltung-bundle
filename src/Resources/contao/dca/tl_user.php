@@ -269,7 +269,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktion'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'checkbox',
-    'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_funktion']),
+    'options'   => \Contao\System::getContainer()->get('rsz-funktion'),
     'eval'      => ['mandatory' => false, 'multiple' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
@@ -312,7 +312,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerqualifikation'] = [
     'filter'    => true,
     'flag'      => 1,
     'inputType' => 'checkbox',
-    'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainerqualifikation']),
+    'options'   => \Contao\System::getContainer()->getParameter('rsz-leiterqualifikation'),
     'eval'      => ['multiple' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
