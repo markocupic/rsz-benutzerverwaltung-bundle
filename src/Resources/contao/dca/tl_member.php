@@ -9,7 +9,9 @@
  *
  */
 
-// Fields
+/**
+ * Fields
+ */
 $GLOBALS['TL_DCA']['tl_member']['fields']['dateOfBirth'] = [
     'sorting' => true,
     'flag' => 6

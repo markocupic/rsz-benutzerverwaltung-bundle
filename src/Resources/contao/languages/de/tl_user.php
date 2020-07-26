@@ -9,8 +9,9 @@
  *
  */
 
-
-// Legends
+/**
+ * Legends
+ */
 $GLOBALS['TL_LANG']['tl_user']['contact_legend'] = 'Kontaktangaben';
 $GLOBALS['TL_LANG']['tl_user']['admin_legend'] = 'Administrator';
 $GLOBALS['TL_LANG']['tl_user']['information_legend'] = 'Weitere Angaben zur Person';
@@ -18,8 +19,9 @@ $GLOBALS['TL_LANG']['tl_user']['trainer_legend'] = 'Trainerangaben';
 $GLOBALS['TL_LANG']['tl_user']['athlete_legend'] = 'Athletenangaben';
 $GLOBALS['TL_LANG']['tl_user']['extended_data'] = 'Erweiterte Angaben';
 
-
-// Fields
+/**
+ * Fields
+ */
 $GLOBALS['TL_LANG']['tl_user']['username'] = ['Benutzername für Backend Login', 'Vorname und Nachname in Kleinbuchstaben ohne Leerzeichen: z.B. hansmuster'];
 $GLOBALS['TL_LANG']['tl_user']['isRSZ'] = ['Teil des RSZ', 'Gehört der Benutzer zum RSZ?'];
 $GLOBALS['TL_LANG']['tl_user']['gender'] = ['Geschlecht', 'Bitte wählen Sie das Geschlecht.'];

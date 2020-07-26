@@ -9,15 +9,18 @@
  *
  */
 
-// Legend
+/**
+ * Legends
+ */
 $GLOBALS['TL_LANG']['tl_settings']['rsz_benutzerverwaltung'] = "RSZ Benutzerverwaltung";
 
-// Fields
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_sac_sektion'] = "SAC-Sektionen";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_kategorie'] = "Wettkampfkatergorien";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_funktion'] = "Funktionen";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_niveau'] = "Niveaus";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainingsgruppe'] = "Trainingsgruppen";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainerqualifikation'] = "Trainerqualifikationen";
-$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_id_group_address_admin'] = "Gruppen-ID Adressen-Admin";
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_sac_sektion'] = ["SAC-Sektionen", "Geben Sie die Sektionen als Kommaseparierte Liste an."];
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_kategorie'] = ["Wettkampfkategorien", "Geben Sie die Wettkampfkategorien als Kommaseparierte Liste an."];
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_funktion'] = ["Funktionen", "Geben Sie die Funktionen als Kommaseparierte Liste an."];
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_niveau'] = ["Niveaus", "Geben Sie die Funktionen als Kommaseparierte Liste an."];
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainingsgruppe'] = ["Trainingsgruppen", "Geben Sie die Trainingsgruppen als Kommaseparierte Liste an"];
+$GLOBALS['TL_LANG']['tl_settings']['mcupic_be_benutzerverwaltung_trainerqualifikation'] = ["Trainerqualifikationen", "Geben Sie die Trainerqualifikationen als Kommaseparierte Liste an."];
 
