@@ -269,7 +269,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktion'] = [
     'sorting'   => true,
     'flag'      => 1,
     'inputType' => 'checkbox',
-    'options'   => \Contao\System::getContainer()->get('rsz-funktion'),
+    'options'   => \Contao\System::getContainer()->getParameter('rsz-funktion'),
     'eval'      => ['mandatory' => false, 'multiple' => true, 'tl_class' => ''],
     'sql'       => "blob NULL"
 ];
