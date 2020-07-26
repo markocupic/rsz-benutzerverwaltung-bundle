@@ -1,1 +1,2 @@
 parameters:
+  rsz-bla: { a1: h1,  a2: h2 }
