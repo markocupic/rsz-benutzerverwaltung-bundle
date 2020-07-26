@@ -211,7 +211,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['kategorie'] = [
     'filter'    => true,
     'flag'      => 1,
     'inputType' => 'select',
-    'options'   => explode(',', \Contao\System::getContainer()->getParameter('rsz-wettkampfkategorien')),
+    'options'   => \Contao\System::getContainer()->getParameter('rsz-wettkampfkategorien'),
     'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => '', 'includeBlankOption' => true],
     'sql'       => "varchar(255) NOT NULL default ''"
 ];
