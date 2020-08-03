@@ -12,7 +12,5 @@
 /**
  * Fields
  */
-$GLOBALS['TL_DCA']['tl_member']['fields']['dateOfBirth'] = [
-    'sorting' => true,
-    'flag' => 6
-];
+$GLOBALS['TL_DCA']['tl_member']['fields']['dateOfBirth']['sorting'] = true;
+$GLOBALS['TL_DCA']['tl_member']['fields']['dateOfBirth']['flag'] = 6;
