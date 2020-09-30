@@ -191,7 +191,8 @@ class RszUser
                 "city"        => $objUser->city,
                 "mobile"      => $objUser->mobile,
                 "phone"       => $objUser->telephone,
-                "password"    => $objUser->password,
+                // Allow the backend password: See check credentials listener
+                //"password"    => $objUser->password,
                 "dateOfBirth" => $objUser->dateOfBirth,
                 "language"    => $objUser->language,
                 "website"     => $objUser->url,

@@ -9,14 +9,21 @@
  *
  */
 
+use Markocupic\RszBenutzerverwaltungBundle\RszUser\RszUser;
+use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload;
+
 /**
  * Backend modules
  */
 $GLOBALS['BE_MOD']['rsz_tools']['rsz_adressen_download'] = array(
-    'callback' => Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload::class
+    'callback' => RszAdressenDownload::class
 );
 
 
+/**
+ * Cronjobs
+ */
+$GLOBALS['TL_CRON']['hourly'][] = [RszUser::class, 'maintainUserProperties'];
 
 
 

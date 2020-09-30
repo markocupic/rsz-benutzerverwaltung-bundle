@@ -6,3 +6,6 @@ services:
 
   # Custom regexp listener
   Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks\AddCustomRegexpListener: ~
+
+  # Custom regexp listener
+  Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks\CheckCredentialsListener: ~
