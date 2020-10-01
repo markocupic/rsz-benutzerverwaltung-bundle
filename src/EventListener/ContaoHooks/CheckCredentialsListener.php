@@ -12,10 +12,12 @@
 namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
 use Contao\BackendUser;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\System;
 use Contao\User;
 use Contao\UserModel;
-use Symfony\Component\Security\Core\Authentication\Provider\DaoAuthenticationProvider;
+use Psr\Log\LogLevel;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**
@@ -24,7 +26,7 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
  */
 class CheckCredentialsListener
 {
-    /** @var EncoderFactoryInterface  */
+    /** @var EncoderFactoryInterface */
     private $encoderFactory;
 
     /**
@@ -57,6 +59,17 @@ class CheckCredentialsListener
                 $hash = $encoder->encodePassword($credentials, null);
                 if (password_verify($credentials, $objUser->password))
                 {
+                    $logger = System::getContainer()->get('monolog.logger.contao');
+                    $logger->log(
+                        LogLevel::INFO,
+                        sprintf(
+                            'Contao member with username "%s" has logged in into the frontend using his backend password.',
+                            $username
+                        ),
+                        ['contao' => new ContaoContext(__METHOD__, ContaoContext::GENERAL)]
+                    );
+
+                    // Return true means: "access granted"
                     return true;
                 }
             }
