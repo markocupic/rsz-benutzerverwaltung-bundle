@@ -26,8 +26,6 @@ class ImportFromCsvListener implements ServiceAnnotationInterface
     /**
      * Import Hook für import_from_csv extension
      *
-     * @Hook("importFromCsv")
-     *
      * @param $arrCustomValidation
      * @param null $objBackendModule
      * @return mixed

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Markocupic\RszBenutzerverwaltungBundle\Excel;
 
 use Contao\BackendModule;
+use Contao\Config;
 use Contao\Database;
 use Contao\Date;
 use Contao\StringUtil;
@@ -90,7 +91,7 @@ class RszAdressenDownload extends BackendModule
                 $value = $objUser->{$field};
                 if ($field == "dateOfBirth")
                 {
-                    $value = Date::parse("Y-m-d", $value);
+                    $value = Date::parse(Config::get('dateFormat'), $value);
                     $sheet->setCellValueByColumnAndRow($col, $row, $value);
                 }
                 elseif (!empty($objUser->{$field}) && is_array(unserialize($objUser->{$field})))
