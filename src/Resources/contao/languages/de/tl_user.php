@@ -20,6 +20,11 @@ $GLOBALS['TL_LANG']['tl_user']['athlete_legend'] = 'Athletenangaben';
 $GLOBALS['TL_LANG']['tl_user']['extended_data'] = 'Erweiterte Angaben';
 
 /**
+ * Global operations
+ */
+$GLOBALS['TL_LANG']['tl_user']['excelExport'] = 'Excel Export';
+
+/**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_user']['username'] = ['Benutzername für Backend Login', 'Vorname und Nachname in Kleinbuchstaben ohne Leerzeichen: z.B. hansmuster'];

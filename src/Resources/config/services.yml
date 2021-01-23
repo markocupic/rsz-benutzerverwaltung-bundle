@@ -1,7 +1,13 @@
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: true
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
 
 
+  # Prepare export
+  Markocupic\RszBenutzerverwaltungBundle\Excel\PrepareExportFromSession:
+    public: true
+    arguments:
+    - '@database_connection'
+    - '@session'

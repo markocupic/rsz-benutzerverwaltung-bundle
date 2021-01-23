@@ -1,43 +1,38 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    RSZ Benutzerverwaltung
- * @license    MIT
- * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
+declare(strict_types=1);
+
+/*
+ * This file is part of RSZ Benutzerverwaltung Bundle.
  *
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  */
 
 namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
-use Contao\Widget;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Widget;
 use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
 
 /**
- * Class AddCustomRegexpListener
- * @package Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks
+ * Class AddCustomRegexpListener.
  */
 class AddCustomRegexpListener implements ServiceAnnotationInterface
 {
-
     /**
-     * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
+     * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter).
      *
      * @Hook("addCustomRegexp")       *
-     * @param string $strRegexp
-     * @param string $varValue
-     * @param Widget $objWidget
-     * @return bool
      */
     public function isFirstnameAndLastname(string $strRegexp, string $varValue, Widget $objWidget): bool
     {
         // Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)
-        if ($strRegexp === 'name')
-        {
-            if (strpos(trim($varValue), ' ') === false)
-            {
+        if ('name' === $strRegexp) {
+            if (false === strpos(trim($varValue), ' ')) {
                 $objWidget->addError('Der Name sollte aus mindestens zwei durch einen Leerschlag voneinander getrennten Wörtern bestehen.');
             }
 

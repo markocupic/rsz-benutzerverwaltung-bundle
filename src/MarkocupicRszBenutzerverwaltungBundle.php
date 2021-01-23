@@ -1,12 +1,15 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @package    RSZ Benutzerverwaltung
- * @license    MIT
- * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
+declare(strict_types=1);
+
+/*
+ * This file is part of RSZ Benutzerverwaltung Bundle.
  *
+ * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * @license MIT
+ * For the full copyright and license information,
+ * please view the LICENSE file that was distributed with this source code.
+ * @link https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  */
 
 namespace Markocupic\RszBenutzerverwaltungBundle;
@@ -14,8 +17,7 @@ namespace Markocupic\RszBenutzerverwaltungBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class MarkocupicRszBenutzerverwaltungBundle
- * @package Markocupic\RszBenutzerverwaltungBundle
+ * Class MarkocupicRszBenutzerverwaltungBundle.
  */
 class MarkocupicRszBenutzerverwaltungBundle extends Bundle
 {
