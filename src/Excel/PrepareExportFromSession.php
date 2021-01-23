@@ -19,6 +19,14 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
+/**
+ * Helper methods for generating a user export depending on the
+ * filter, search and order settings
+ * in the Contao backend
+ *
+ * Class PrepareExportFromSession
+ * @package Markocupic\RszBenutzerverwaltungBundle\Excel
+ */
 class PrepareExportFromSession
 {
     /**
