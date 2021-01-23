@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
- * @license    MIT
- *
- * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
- */
-
 declare(strict_types=1);
 
 /*
