@@ -39,7 +39,7 @@ PaletteManipulator::create()
 		PaletteManipulator::POSITION_APPEND
 	)
 	->addField(
-		array('iban', 'ahv_nr', 'fe_sorting'),
+		array('js_nr', 'iban', 'ahv_nr', 'fe_sorting'),
 		'extended_data',
 		PaletteManipulator::POSITION_APPEND
 	)
@@ -76,7 +76,7 @@ PaletteManipulator::create()
 		PaletteManipulator::POSITION_APPEND
 	)
 	->addField(
-		array('iban', 'ahv_nr'),
+		array('js_nr', 'iban', 'ahv_nr'),
 		'extended_data',
 		PaletteManipulator::POSITION_APPEND
 	)
@@ -99,8 +99,8 @@ $GLOBALS['TL_DCA']['tl_user']['config']['onload_callback'][] = array(
 );
 
 $GLOBALS['TL_DCA']['tl_user']['config']['onload_callback'][] = array(
-    RszUser::class,
-    'prepareExcelExport'
+	RszUser::class,
+	'prepareExcelExport'
 );
 
 $GLOBALS['TL_DCA']['tl_user']['config']['ondelete_callback'][] = array(
@@ -321,6 +321,16 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['iban'] = array(
 	'inputType' => 'text',
 	'eval'      => array('tl_class' => '', 'maxlength' => 26),
 	'sql'       => "varchar(26) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['js_nr'] = array(
+	'search'    => true,
+	'exclude'   => true,
+	'sorting'   => true,
+	'flag'      => 1,
+	'inputType' => 'text',
+	'eval'      => array('tl_class' => '', 'maxlength' => 8, 'rgxp' => 'natural'),
+	'sql'       => "varchar(8) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['trainerqualifikation'] = array(

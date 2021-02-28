@@ -79,6 +79,7 @@ class RszAdressenDownload extends BackendModule
             'sac_sektion',
             'funktion',
             'niveau',
+            'js_nr',
             'trainingsgruppe',
             'nationalmannschaft',
             'trainerqualifikation',

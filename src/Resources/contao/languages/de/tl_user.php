@@ -58,3 +58,4 @@ $GLOBALS['TL_LANG']['tl_user']['link_digitalrock'] = ['Link zu Digitalrock', 'Li
 $GLOBALS['TL_LANG']['tl_user']['fe_sorting'] = ['Sortierrang in der Mitgliederliste im Frontend', 'Geben  Sie eine Zahl ein. Je kleiner die Zahl, umso weiter oben die Anzeige im Frontend.'];
 $GLOBALS['TL_LANG']['tl_user']['ahv_nr'] = ['AHV-Nr. (13-stellig)', 'z.B. 756.1234.5678.95'];
 $GLOBALS['TL_LANG']['tl_user']['iban'] = ['Bankverbindung, IBAN-Nr.', 'im Format CH31 8123 9000 0012 4568 9'];
+$GLOBALS['TL_LANG']['tl_user']['js_nr'] = ['J&S-Nr.', 'Gib hier deine J&S Nummer ein.'];
