@@ -240,7 +240,7 @@ class RszUser
 
                     // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
-                    $link = sprintf('%s/contao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
+                    $link = sprintf('%scontao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
                     $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->User->name, Environment::get('httpHost'), $link);
 
                     // Send E-Mail
