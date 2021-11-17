@@ -1,6 +1,6 @@
 parameters:
   rsz-user-file-directory: "files/Dateiablage/user_dir"
-  rsz-sac-sektionen: [ Pilatus, Oberhasli, Rossberg, Titlis, Lucendro ]
+  rsz-sac-sektionen: [ Pilatus, Oberhasli, Rossberg, Titlis, Lucendro, Albis ]
   rsz-wettkampfkategorien: [ "Damen U10", "Damen U12", "Damen U14", "Damen U16", "Damen U18", "Damen Elite", "Herren U10", "Herren U12", "Herren U14", "Herren U16", "Herren U18", "Herren Elite" ]
   rsz-leiterqualifikation: [ "Sportklettern 1", "Sportklettern 2", "Sportklettern 3", "Trainer-Swiss-Olympique", "Skitouren 1", "Skitouren 2", "Bergsteigen 1", "Bergsteigen 2" ]
-  rsz-funktion: [ "Athlet", "Trainer", "Vorstand", "Website", "Mentalcoach", "Mietfahrzeuge", "JO Materialchef", "Ehemalige", "Eltern" ]
+  rsz-funktion: [ "Athlet", "Trainer", "Vorstand", "Website", "Mentalcoach", "Coach 1418", "Mietfahrzeuge", "JO Materialchef", "Ehemalige", "Eltern" ]
