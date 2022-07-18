@@ -98,7 +98,7 @@ class PrepareExportFromSession
             }
         }
 
-        $arrIds = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $arrIds = $qb->fetchFirstColumn();
 
         return \is_array($arrIds) ? $arrIds : [];
     }

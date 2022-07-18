@@ -41,7 +41,7 @@ class CheckCredentialsListener
     }
 
     /**
-     * Allow the backend password when loging in into the frontend.
+     * Allow the backend password when logging in into the frontend.
      *
      * @Hook("checkCredentials")
      */

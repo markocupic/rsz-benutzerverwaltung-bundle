@@ -6,9 +6,5 @@ cd..
 cd..
 cd..
 cd..
-:: src
 vendor\bin\ecs check vendor/markocupic/rsz-benutzerverwaltung-bundle/src --config vendor/markocupic/rsz-benutzerverwaltung-bundle/.ecs/config/default.php
-:: tests
-vendor\bin\ecs check vendor/markocupic/rsz-benutzerverwaltung-bundle/tests --config vendor/markocupic/rsz-benutzerverwaltung-bundle/.ecs/config/default.php
-::
 cd vendor/markocupic/rsz-benutzerverwaltung-bundle/.ecs./batch/check

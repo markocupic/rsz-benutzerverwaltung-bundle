@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\RszBenutzerverwaltungBundle\Excel;
 
 use Contao\BackendModule;
+use Contao\BackendUser;
 use Contao\Config;
 use Contao\Database;
 use Contao\Date;
@@ -22,17 +23,15 @@ use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-/**
- * Class RszAdressenDownload.
- */
 class RszAdressenDownload extends BackendModule
 {
-    /**
-     * RszAdressenDownload constructor.
-     */
-    public function __construct()
+    private BackendUser|null $user = null;
+
+    public function __construct(BackendUser|null $user)
     {
-        parent::__construct();
+        if ($user instanceof BackendUser) {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -41,7 +40,8 @@ class RszAdressenDownload extends BackendModule
      */
     public function compile(): void
     {
-        $this->import('BackendUser', 'User');
+        // Legacy
+        $this->user = BackendUser::getInstance();
         $this->downloadAddressesAsXlsx();
     }
 
@@ -86,7 +86,7 @@ class RszAdressenDownload extends BackendModule
             'trainerFromGroup',
         ];
 
-        if ($this->User->isAdmin) {
+        if ($this->user && $this->user->admin) {
             $arr_fields[] = 'ahv_nr';
         }
 
@@ -104,7 +104,7 @@ class RszAdressenDownload extends BackendModule
 
         if (empty($arrIds)) {
             $objUser = Database::getInstance()
-                ->prepare('SELECT * FROM tl_user WHERE isRSZ=? ORDER BY funktion, dateOfBirth, name')
+                ->prepare('SELECT * FROM tl_user WHERE isRSZ = ? ORDER BY funktion, dateOfBirth, name')
                 ->execute('1')
             ;
         } else {

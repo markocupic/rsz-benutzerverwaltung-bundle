@@ -37,44 +37,36 @@ use Contao\User;
 use Contao\UserModel;
 use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload;
 use PhpOffice\PhpSpreadsheet\Exception;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * Class RszUser.
  */
 class RszUser
 {
-    /**
-     * @var string
-     */
+   
     const DEFAULT_AVATAR_FEMALE = 'bundles/markocupicrszbenutzerverwaltung/female-1.png';
-
-    /**
-     * @var string
-     */
     const DEFAULT_AVATAR_MALE = 'bundles/markocupicrszbenutzerverwaltung/male-1.png';
-
-    /**
-     * @var string
-     */
     const STR_INFO_FLASH_TYPE = 'contao.BE.info';
-    /**
-     * @var BackendUser|User
-     */
-    protected $User;
+    
+    private Security $security;
+    private string $projectDir;
+    private ?BackendUser $user;
 
-    /**
-     * @var string
-     */
-    private $projectDir;
+   
 
-    /**
-     * RszUser constructor.
-     */
-    public function __construct()
+
+    public function __construct(Security $security, string $projectDir)
     {
-        $this->projectDir = System::getContainer()->getParameter('kernel.project_dir');
+        $this->security = $security;
+        $this->projectDir = $projectDir;
 
-        $this->User = BackendUser::getInstance();
+        // Get backend user
+        $user = $security->getUser();
+        if($user instanceof BackendUser)
+        {
+            $this->user = $user;
+        }
     }
 
     /**
@@ -117,7 +109,7 @@ class RszUser
             ;
             $arrIds = $prepareExcelExport->getIdsFromSession();
             $strOrderBy = $prepareExcelExport->getOrderByFromSession();
-            $export = new RszAdressenDownload();
+            $export = new RszAdressenDownload($this->user);
             $export->downloadAddressesAsXlsx($arrIds, $strOrderBy);
         }
     }
@@ -241,7 +233,7 @@ class RszUser
                     // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
                     $link = sprintf('%scontao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
-                    $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->User->name, Environment::get('httpHost'), $link);
+                    $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->user->name, Environment::get('httpHost'), $link);
 
                     // Send E-Mail
                     $objEmail = new Email();
@@ -280,7 +272,7 @@ class RszUser
             }
 
             // Display message if a directory must be deleted
-            if ($this->User->isAdmin) {
+            if ($this->user->isAdmin) {
                 if (null !== $objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
                     $arrGroups = array_map('strtolower', StringUtil::deserialize($objUser->funktion, true));
 

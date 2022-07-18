@@ -27,6 +27,9 @@
     "contao/core-bundle": "^4.9",
     "phpoffice/phpspreadsheet": "^1.14"
   },
+  "require-dev": {
+    "contao/easy-coding-standard": "^5.3"
+  },
   "autoload": {
     "psr-4": {
       "Markocupic\\RszBenutzerverwaltungBundle\\": "src/"

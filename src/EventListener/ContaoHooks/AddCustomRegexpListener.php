@@ -26,7 +26,7 @@ class AddCustomRegexpListener implements ServiceAnnotationInterface
     /**
      * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter).
      *
-     * @Hook("addCustomRegexp")       *
+     * @Hook("addCustomRegexp")
      */
     public function isFirstnameAndLastname(string $strRegexp, string $varValue, Widget $objWidget): bool
     {

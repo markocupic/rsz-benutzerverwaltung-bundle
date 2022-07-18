@@ -3,7 +3,12 @@ services:
     autowire: true
     autoconfigure: true
     public: true
+    bind:
+      $projectDir: '%kernel.project_dir%'
 
+  Markocupic\RszBenutzerverwaltungBundle\:
+    resource: ../../
+    exclude: [ '../../{DependencyInjection,Resources}', '../../Excel/RszAdressenDownload.php' ]
 
   # Prepare export
   Markocupic\RszBenutzerverwaltungBundle\Excel\PrepareExportFromSession:
