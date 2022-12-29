@@ -51,10 +51,7 @@ class RszUser
     
     private Security $security;
     private string $projectDir;
-    private ?BackendUser $user;
-
-   
-
+    private ?BackendUser $user = null;
 
     public function __construct(Security $security, string $projectDir)
     {
@@ -263,7 +260,7 @@ class RszUser
             return;
         }
 
-        foreach (scan($this->projectDir.'/'.$strFolder) as $strUserDir) {
+        foreach (Folder::scan($this->projectDir.'/'.$strFolder) as $strUserDir) {
             $objUser = UserModel::findByUsername($strUserDir);
 
             if (!$objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
