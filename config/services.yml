@@ -8,5 +8,5 @@ services:
 
   Markocupic\RszBenutzerverwaltungBundle\:
     resource: ../src/
-    exclude: [ '../src/{DependencyInjection,Resources}', '../src/Excel/RszAdressenDownload.php' ]
+    exclude: [ '../src/{DependencyInjection}' ]
 

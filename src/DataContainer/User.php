@@ -2,7 +2,6 @@
 
 /**
  * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @author     Marko Cupic
  * @license    MIT
  *
  * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
@@ -40,53 +39,45 @@ use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload;
 use PhpOffice\PhpSpreadsheet\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
-
 
 class User
 {
-
     public const STR_INFO_FLASH_TYPE = 'contao.BE.info';
 
     private RequestStack $requestStack;
-    private ?BackendUser $user = null;
     private PrepareExportFromSession $prepareExportFromSession;
     private LoggerInterface $contaoGeneralLogger;
     private string $projectDir;
+    private Security $security;
+    private RszAdressenDownload $rszAdressenDownload;
 
-    public function __construct(RequestStack $requestStack, Security $security, PrepareExportFromSession $prepareExportFromSession, LoggerInterface $contaoGeneralLogger, string $projectDir)
+    public function __construct(RequestStack $requestStack, Security $security, RszAdressenDownload $rszAdressenDownload, PrepareExportFromSession $prepareExportFromSession, LoggerInterface $contaoGeneralLogger, string $projectDir)
     {
-        $this->projectDir = $projectDir;
+        $this->requestStack = $requestStack;
+        $this->security = $security;
+        $this->rszAdressenDownload = $rszAdressenDownload;
         $this->prepareExportFromSession = $prepareExportFromSession;
         $this->contaoGeneralLogger = $contaoGeneralLogger;
-
-        // Get backend user
-        $user = $security->getUser();
-
-        if($user instanceof BackendUser)
-        {
-            $this->user = $user;
-        }
-
-        $this->requestStack = $requestStack;
+        $this->projectDir = $projectDir;
     }
-
-
 
     /**
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 100)]
-    public function prepareExcelExport(): void
+    public function prepareExcelExport(): Response|null
     {
-        if ('user' === Input::get('do') && 'excelExport' === Input::get('act')) {
-
+        if ('excelExport' === Input::get('key')) {
             $arrIds = $this->prepareExportFromSession->getIdsFromSession();
             $strOrderBy = $this->prepareExportFromSession->getOrderByFromSession();
-            $export = new RszAdressenDownload($this->user);
-            $export->downloadAddressesAsXlsx($arrIds, $strOrderBy);
+
+            return $this->rszAdressenDownload->downloadAddressesAsXlsx($arrIds, $strOrderBy);
         }
+
+        return null;
     }
 
     /**
@@ -209,7 +200,8 @@ class User
                     // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
                     $link = sprintf('%scontao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
-                    $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->user->name, Environment::get('httpHost'), $link);
+
+                    $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->security->getUser()->name, Environment::get('httpHost'), $link);
 
                     // Send E-Mail
                     $objEmail = new Email();
@@ -225,42 +217,6 @@ class User
             }
         }
     }
-
-    /**
-     * Check for orphaned directories.
-     *
-     * @param $strFunktion
-     */
-    private function checkForOrphanedDirectories($strFunktion): void
-    {
-        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.$strFunktion;
-
-        if (!file_exists($this->projectDir.'/'.$strFolder)) {
-            return;
-        }
-
-        foreach (Folder::scan($this->projectDir.'/'.$strFolder) as $strUserDir) {
-            $objUser = UserModel::findByUsername($strUserDir);
-
-            if (!$objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
-                $msg = $strFolder.'/'.$strUserDir.' kann gelöscht werden, da tl_user.'.$strUserDir.' gelöscht wurde.';
-                $this->addInfoFlashMessage($msg);
-            }
-
-            // Display message if a directory must be deleted
-            if ($this->user->isAdmin) {
-                if (null !== $objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
-                    $arrGroups = array_map('strtolower', StringUtil::deserialize($objUser->funktion, true));
-
-                    if (!\in_array($strFunktion, $arrGroups, true)) {
-                        $msg = $strFolder.'/'.$strUserDir.' kann gelöscht werden, da '.$objUser->username.' keine '.ucfirst($strFunktion).'-Funktion (mehr) innehat!';
-                        $this->addInfoFlashMessage($msg);
-                    }
-                }
-            }
-        }
-    }
-
 
     #[AsCallback(table: 'tl_user', target: 'config.ondelete', priority: 100)]
     public function deleteAssignedMember(DataContainer $dc): void
@@ -283,6 +239,47 @@ class User
         // Show message in the backend
         $this->addInfoFlashMessage(sprintf('Das mit dem Benutzer verknüpfte Mitglied "%s %s" wurde automatisch mitgelöscht.', $objMember->firstname, $objMember->lastname));
         $objMember->delete();
+    }
+
+    /**
+     * Check for orphaned directories.
+     *
+     * @param $strFunktion
+     */
+    private function checkForOrphanedDirectories($strFunktion): void
+    {
+        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.$strFunktion;
+
+        if (!file_exists($this->projectDir.'/'.$strFolder)) {
+            return;
+        }
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        if ($request->query->has('act')) {
+            return;
+        }
+
+        foreach (Folder::scan($this->projectDir.'/'.$strFolder) as $strUserDir) {
+            $objUser = UserModel::findByUsername($strUserDir);
+
+            if (!$objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
+                $msg = $strFolder.'/'.$strUserDir.' kann gelöscht werden, da tl_user.'.$strUserDir.' gelöscht wurde.';
+                $this->addInfoFlashMessage($msg);
+            }
+
+            // Display message if a directory must be deleted
+            if ($this->security->isGranted('ROLE_ADMIN')) {
+                if (null !== $objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
+                    $arrGroups = array_map('strtolower', StringUtil::deserialize($objUser->funktion, true));
+
+                    if (!\in_array($strFunktion, $arrGroups, true)) {
+                        $msg = $strFolder.'/'.$strUserDir.' kann gelöscht werden, da '.$objUser->username.' keine '.ucfirst($strFunktion).'-Funktion (mehr) innehat!';
+                        $this->addInfoFlashMessage($msg);
+                    }
+                }
+            }
+        }
     }
 
     private function addInfoFlashMessage(string $msg): void

@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Helper methods for generating a user export depending on the
  * filter, search and order settings
  * in the Contao backend.
- *
  */
 class PrepareExportFromSession
 {
@@ -43,13 +42,12 @@ class PrepareExportFromSession
     {
         /** @var QueryBuilder $qb */
         $qb = $this->connection->createQueryBuilder();
+
         $qb->select('id')
-            ->from('tl_user', 't')
-        ;
+            ->from('tl_user', 't');
 
         // Get session bag
-        $session = $this->requestStack->getCurrentRequest()->getSession();
-        $objSessionBag = $session->getBag('contao_backend');
+        $objSessionBag = $this->requestStack->getCurrentRequest()->getSession()->getBag('contao_backend');
 
         // Filter
         if ($objSessionBag->has('filter')) {
@@ -58,12 +56,15 @@ class PrepareExportFromSession
             if (isset($filter['tl_user']) && !empty($filter['tl_user'])) {
                 foreach ($filter['tl_user'] as $k => $v) {
                     if ('limit' !== $k) {
-                        $orxOrg = $qb->expr()->or();
-                        // If field is a serialized array
-                        $orxOrg->add($qb->expr()->like('t.'.$k, $qb->expr()->literal('%:"'.$v.'";%')));
-                        // Else
-                        $orxOrg->add($qb->expr()->like('t.'.$k, $qb->expr()->literal('%'.$v.'%')));
-                        $qb->andWhere($orxOrg);
+                        $exprOr = $qb->expr()->or(
+                            // If field is a serialized array
+                            $qb->expr()->like('t.'.$k, $qb->expr()->literal('%:"'.$v.'";%')),
+                            // else
+                            $qb->expr()->like('t.'.$k, $qb->expr()->literal('%'.$v.'%')),
+                        );
+
+                        $qb->andWhere($exprOr);
+
                     }
                 }
             }
@@ -95,11 +96,9 @@ class PrepareExportFromSession
     public function getOrderByFromSession(): string
     {
         // Order by
-        // Get session bag
         $strOrder = 'dateAdded DESC';
 
-        $session = $this->requestStack->getCurrentRequest()->getSession();
-        $objSessionBag = $session->getBag('contao_backend');
+        $objSessionBag = $this->requestStack->getCurrentRequest()->getSession()->getBag('contao_backend');
         $orderBy = $objSessionBag->get('sorting');
 
         if (isset($orderBy['tl_user']) && !empty($orderBy['tl_user'])) {

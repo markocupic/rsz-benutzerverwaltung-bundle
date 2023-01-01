@@ -95,7 +95,7 @@ PaletteManipulator::create()
 
 $GLOBALS['TL_DCA']['tl_user']['list']['global_operations']['excelExport'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_user']['excelExport'],
-    'href'       => 'act=excelExport',
+    'href'       => 'key=excelExport',
     'class'      => 'header_icon',
     'icon'       => 'bundles/markocupicrszbenutzerverwaltung/excel.svg',
     'attributes' => 'onclick="Backend.getScrollOffset();" accesskey="i"',

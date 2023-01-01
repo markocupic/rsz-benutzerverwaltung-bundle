@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle\Excel;
 
-use Contao\BackendModule;
 use Contao\BackendUser;
 use Contao\Config;
 use Contao\Database;
@@ -22,13 +21,21 @@ use Contao\Date;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Security\Core\Security;
 
-class RszAdressenDownload extends BackendModule
+class RszAdressenDownload
 {
     private BackendUser|null $user = null;
+    private Security $security;
 
-    public function __construct(BackendUser|null $user)
+    public function __construct(Security $security)
     {
+        $this->security = $security;
+
+        $user = $this->security->getUser();
+
         if ($user instanceof BackendUser) {
             $this->user = $user;
         }
@@ -38,18 +45,7 @@ class RszAdressenDownload extends BackendModule
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function compile(): void
-    {
-        // Legacy
-        $this->user = BackendUser::getInstance();
-        $this->downloadAddressesAsXlsx();
-    }
-
-    /**
-     * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function downloadAddressesAsXlsx(array $arrIds = [], $strOrderBy = ''): void
+    public function downloadAddressesAsXlsx(array $arrIds = [], $strOrderBy = ''): Response
     {
         if ('' === $strOrderBy) {
             $strOrderBy = 'funktion, dateOfBirth, name';
@@ -98,7 +94,7 @@ class RszAdressenDownload extends BackendModule
             if (!Database::getInstance()->fieldExists($field, 'tl_user')) {
                 throw new \Exception(sprintf('Column "%s" not found in %s.', $field, 'tl_user'));
             }
-            $sheet->setCellValueByColumnAndRow($col, $row, $field);
+            $sheet->setCellValue([$col, $row], $field);
             ++$col;
         }
 
@@ -124,26 +120,33 @@ class RszAdressenDownload extends BackendModule
 
                 if ('dateOfBirth' === $field) {
                     $value = Date::parse(Config::get('dateFormat'), $value);
-                    $sheet->setCellValueByColumnAndRow($col, $row, $value);
+                    $sheet->setCellValue([$col, $row], $value);
                 } elseif (!empty($objUser->{$field}) && \is_array(unserialize($objUser->{$field}))) {
                     $arrValues = unserialize($objUser->{$field});
                     $arrValues = array_filter($arrValues, 'strlen');
                     $value = implode(', ', $arrValues);
-                    $sheet->setCellValueByColumnAndRow($col, $row, $value);
+                    $sheet->setCellValue([$col, $row], $value);
                 } else {
                     $value = $objUser->{$field};
-                    $sheet->setCellValueByColumnAndRow($col, $row, $value);
+                    $sheet->setCellValue([$col, $row], $value);
                 }
                 ++$col;
             }
         }
 
         // Send file to browser
-        $objWriter = new Xlsx($spreadsheet);
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="adressen_rsz_'.Date::parse('Y-m-d').'.xlsx"');
-        header('Cache-Control: max-age=0');
-        $objWriter->save('php://output');
-        exit;
+        $writer = new Xlsx($spreadsheet);
+
+        $response = new StreamedResponse(
+            static function () use ($writer): void {
+                $writer->save('php://output');
+            }
+        );
+
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('Content-Disposition', 'attachment;filename="adressen_rsz_'.Date::parse('Y-m-d').'.xlsx"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+
+        return $response->send();
     }
 }
