@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,20 +14,15 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle\EventListener\ContaoHooks;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Widget;
-use Terminal42\ServiceAnnotationBundle\ServiceAnnotationInterface;
 
-/**
- * Class AddCustomRegexpListener.
- */
-class AddCustomRegexpListener implements ServiceAnnotationInterface
+class AddCustomRegexpListener
 {
     /**
      * Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter).
-     *
-     * @Hook("addCustomRegexp")
      */
+    #[AsHook('addCustomRegexp', priority: 100)]
     public function isFirstnameAndLastname(string $strRegexp, string $varValue, Widget $objWidget): bool
     {
         // Überprüfe, ob Name und Vorname übergeben wurden (mind. 2 Wörter)

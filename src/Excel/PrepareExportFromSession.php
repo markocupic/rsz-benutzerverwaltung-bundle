@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,35 +17,23 @@ namespace Markocupic\RszBenutzerverwaltungBundle\Excel;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Helper methods for generating a user export depending on the
  * filter, search and order settings
- * in the Contao backend
+ * in the Contao backend.
  *
- * Class PrepareExportFromSession
- * @package Markocupic\RszBenutzerverwaltungBundle\Excel
  */
 class PrepareExportFromSession
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
+    private RequestStack $requestStack;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-
-    /**
-     * TlUser constructor.
-     */
-    public function __construct(Connection $connection, SessionInterface $session)
+    public function __construct(Connection $connection, RequestStack $requestStack)
     {
         $this->connection = $connection;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -60,7 +48,8 @@ class PrepareExportFromSession
         ;
 
         // Get session bag
-        $objSessionBag = $this->session->getBag('contao_backend');
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+        $objSessionBag = $session->getBag('contao_backend');
 
         // Filter
         if ($objSessionBag->has('filter')) {
@@ -69,7 +58,7 @@ class PrepareExportFromSession
             if (isset($filter['tl_user']) && !empty($filter['tl_user'])) {
                 foreach ($filter['tl_user'] as $k => $v) {
                     if ('limit' !== $k) {
-                        $orxOrg = $qb->expr()->orX();
+                        $orxOrg = $qb->expr()->or();
                         // If field is a serialized array
                         $orxOrg->add($qb->expr()->like('t.'.$k, $qb->expr()->literal('%:"'.$v.'";%')));
                         // Else
@@ -108,7 +97,9 @@ class PrepareExportFromSession
         // Order by
         // Get session bag
         $strOrder = 'dateAdded DESC';
-        $objSessionBag = $this->session->getBag('contao_backend');
+
+        $session = $this->requestStack->getCurrentRequest()->getSession();
+        $objSessionBag = $session->getBag('contao_backend');
         $orderBy = $objSessionBag->get('sorting');
 
         if (isset($orderBy['tl_user']) && !empty($orderBy['tl_user'])) {

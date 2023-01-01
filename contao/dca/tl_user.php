@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
-use Markocupic\RszBenutzerverwaltungBundle\RszUser\RszUser;
 
 // Extend admin, extend, default and custom palette
 PaletteManipulator::create()
@@ -93,22 +92,6 @@ PaletteManipulator::create()
         PaletteManipulator::POSITION_APPEND
     )
     ->applyToPalette('login', 'tl_user');
-
-// Onload_callback callbacks
-$GLOBALS['TL_DCA']['tl_user']['config']['onload_callback'][] = [
-    RszUser::class,
-    'maintainUserProperties',
-];
-
-$GLOBALS['TL_DCA']['tl_user']['config']['onload_callback'][] = [
-    RszUser::class,
-    'prepareExcelExport',
-];
-
-$GLOBALS['TL_DCA']['tl_user']['config']['ondelete_callback'][] = [
-    RszUser::class,
-    'deleteAssignedMember',
-];
 
 $GLOBALS['TL_DCA']['tl_user']['list']['global_operations']['excelExport'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_user']['excelExport'],
