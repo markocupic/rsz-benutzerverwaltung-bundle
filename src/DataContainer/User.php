@@ -32,6 +32,7 @@ use Contao\MemberModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
+use Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser\MaintainContaoCorePermissions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
@@ -41,9 +42,9 @@ class User
     public const STR_INFO_FLASH_TYPE = 'contao.BE.info';
 
     private RequestStack $requestStack;
+    private Security $security;
     private LoggerInterface $contaoGeneralLogger;
     private string $projectDir;
-    private Security $security;
 
     public function __construct(RequestStack $requestStack, Security $security, LoggerInterface $contaoGeneralLogger, string $projectDir)
     {
@@ -52,19 +53,17 @@ class User
         $this->contaoGeneralLogger = $contaoGeneralLogger;
         $this->projectDir = $projectDir;
     }
-
     /**
-     * Check for orphaned user directories from filesystem
-     * onload callback for tl_user
-     * sync tl_user with tl_member
-     * create user directories
-     * add filemounts for the user directories.
+     * For ech user do:
+     * - Add correct file mount
+     * - Sync tl_user with tl_member
      *
      * @throws \Exception
      */
     #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 101)]
     public function maintainUserProperties(): void
     {
+
         // Remove  orphaned user directories from filesystem
         $this->checkForOrphanedDirectories('athlet');
         $this->checkForOrphanedDirectories('trainer');
@@ -72,13 +71,13 @@ class User
         $this->checkForOrphanedDirectories('website');
         $this->checkForOrphanedDirectories('eltern');
 
-        // Synchronize all tl_user.passwords with tl_member.passwords
         $objUser = UserModel::findAll();
 
         if (null === $objUser) {
             return;
         }
 
+        // Traverse each user.
         while ($objUser->next()) {
             if (!$objUser->isRSZ || empty($objUser->username) || empty($objUser->name)) {
                 continue;
@@ -103,7 +102,7 @@ class User
                             new Folder($strFolder);
                         }
 
-                        // Add filemount for the user directory
+                        // Add file mount for the user directory
                         $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.strtolower($strFunction).'/'.$objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
                         $arrFileMounts = StringUtil::deserialize($objUser->filemounts, true);
@@ -115,7 +114,7 @@ class User
                 }
             }
 
-            // Collect data
+            // Sync from tl_user -> tl_member
             unset($firstname, $lastname);
             $arrName = explode(' ', $objUser->name);
 
@@ -152,7 +151,7 @@ class User
             $objDbMember = MemberModel::findByPk($objUser->assignedMember);
 
             if (null !== $objDbMember) {
-                // Sync tl_member with tl_user
+                // Sync from tl_user -> tl_member
                 $objDbMember->setRow($set);
                 $objDbMember->save();
             } else {
@@ -229,7 +228,8 @@ class User
 
         $request = $this->requestStack->getCurrentRequest();
 
-        if ($request->query->has('act')) {
+        // Skip if the method has been called via cron job or if user is in detail mode.
+        if (!$request || $request->query->has('act')) {
             return;
         }
 
