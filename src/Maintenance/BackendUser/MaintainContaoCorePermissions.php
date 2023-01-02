@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Tool Bundle.
+ * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-tool-bundle
+ * @link https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  */
 
 namespace Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser;
@@ -17,11 +17,14 @@ namespace Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
-use Contao\FilesModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
+/**
+ * Reset Contao Core Permissions of Backend Users
+ * This is useful when user rights are only applied to user groups.
+ */
 class MaintainContaoCorePermissions
 {
     private ContaoFramework $framework;
@@ -82,22 +85,8 @@ class MaintainContaoCorePermissions
                         continue;
                     }
 
-                    if ('filemountss' === $field) {
-                        $filesModelAdapter = $this->framework->getAdapter(FilesModel::class);
-
-                        // Set users home directory, if there is one
-                        $objFolder = $filesModelAdapter->findByPath($this->backendUserHomeDir.'/'.$arrUserProps['id']);
-
-                        if (null !== $objFolder) {
-                            $permNew = [$objFolder->uuid];
-                        } else {
-                            // empty array
-                            $permNew = [];
-                        }
-                    } else {
-                        // empty array
-                        $permNew = [];
-                    }
+                    // empty array
+                    $permNew = [];
 
                     $arrInheritNew[$field] = $permNew;
                 }
