@@ -31,7 +31,7 @@ class MarkocupicRszBenutzerverwaltungExtension extends Extension
             new FileLocator(__DIR__.'/../../config')
         );
 
-        $loader->load('parameters.yml');
-        $loader->load('services.yml');
+        $loader->load('parameters.yaml');
+        $loader->load('services.yaml');
     }
 }

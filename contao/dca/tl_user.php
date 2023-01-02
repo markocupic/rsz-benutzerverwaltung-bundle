@@ -93,9 +93,9 @@ PaletteManipulator::create()
     )
     ->applyToPalette('login', 'tl_user');
 
-$GLOBALS['TL_DCA']['tl_user']['list']['global_operations']['excelExport'] = [
-    'label'      => &$GLOBALS['TL_LANG']['tl_user']['excelExport'],
-    'href'       => 'key=excelExport',
+$GLOBALS['TL_DCA']['tl_user']['list']['global_operations']['addressDownload'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_user']['addressDownload'],
+    'route'      => 'markocupic_rsz_benutzerverwaltung_rsz_address_download',
     'class'      => 'header_icon',
     'icon'       => 'bundles/markocupicrszbenutzerverwaltung/excel.svg',
     'attributes' => 'onclick="Backend.getScrollOffset();" accesskey="i"',

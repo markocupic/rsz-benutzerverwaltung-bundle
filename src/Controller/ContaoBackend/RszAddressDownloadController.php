@@ -12,39 +12,51 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  */
 
-namespace Markocupic\RszBenutzerverwaltungBundle\Excel;
+namespace Markocupic\RszBenutzerverwaltungBundle\Controller\ContaoBackend;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Query\QueryBuilder;
+use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAddressDownload;
+use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Helper methods for generating a user export depending on the
- * filter, search and order settings
- * in the Contao backend.
- */
-class PrepareExportFromSession
+#[Route('/contao/_rsz_address_download', name: 'markocupic_rsz_benutzerverwaltung_rsz_address_download', defaults: ['_scope' => 'backend'])]
+class RszAddressDownloadController
 {
     private Connection $connection;
     private RequestStack $requestStack;
+    private RszAddressDownload $rszAddressDownload;
 
-    public function __construct(Connection $connection, RequestStack $requestStack)
+    public function __construct(Connection $connection, RequestStack $requestStack, RszAddressDownload $rszAddressDownload)
     {
         $this->connection = $connection;
         $this->requestStack = $requestStack;
+        $this->rszAddressDownload = $rszAddressDownload;
     }
 
     /**
      * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function getIdsFromSession(): array
+    public function __invoke(): Response
     {
-        /** @var QueryBuilder $qb */
+        $arrIds = $this->getIdsFromSession();
+        $strOrderBy = $this->getOrderByFromSession();
+
+        return $this->rszAddressDownload->download($arrIds, $strOrderBy);
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function getIdsFromSession(): array
+    {
         $qb = $this->connection->createQueryBuilder();
 
         $qb->select('id')
-            ->from('tl_user', 't');
+            ->from('tl_user', 't')
+        ;
 
         // Get session bag
         $objSessionBag = $this->requestStack->getCurrentRequest()->getSession()->getBag('contao_backend');
@@ -57,14 +69,13 @@ class PrepareExportFromSession
                 foreach ($filter['tl_user'] as $k => $v) {
                     if ('limit' !== $k) {
                         $exprOr = $qb->expr()->or(
-                            // If field is a serialized array
+                            // In case that the field content is a serialized array
                             $qb->expr()->like('t.'.$k, $qb->expr()->literal('%:"'.$v.'";%')),
                             // else
                             $qb->expr()->like('t.'.$k, $qb->expr()->literal('%'.$v.'%')),
                         );
 
                         $qb->andWhere($exprOr);
-
                     }
                 }
             }
@@ -81,19 +92,15 @@ class PrepareExportFromSession
                     $strField = $arrSearch['field'];
                     $strSearch = $arrSearch['value'];
 
-                    if (!empty($strSearch)) {
-                        $qb->andWhere($qb->expr()->like('t.'.$strField, $qb->expr()->literal('%'.$strSearch.'%')));
-                    }
+                    $qb->andWhere($qb->expr()->like('t.'.$strField, $qb->expr()->literal('%'.$strSearch.'%')));
                 }
             }
         }
 
-        $arrIds = $qb->fetchFirstColumn();
-
-        return \is_array($arrIds) ? $arrIds : [];
+        return $qb->fetchFirstColumn();
     }
 
-    public function getOrderByFromSession(): string
+    private function getOrderByFromSession(): string
     {
         // Order by
         $strOrder = 'dateAdded DESC';

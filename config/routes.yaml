@@ -1,0 +1,3 @@
+contao:
+    resource: '@MarkocupicRszBenutzerverwaltungBundle/src/Controller'
+    type: annotation

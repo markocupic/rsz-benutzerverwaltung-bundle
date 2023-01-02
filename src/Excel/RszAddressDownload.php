@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Security;
 
-class RszAdressenDownload
+class RszAddressDownload
 {
     private BackendUser|null $user = null;
     private Security $security;
@@ -42,10 +42,13 @@ class RszAdressenDownload
     }
 
     /**
+     * @param array $arrIds
+     * @param string $strOrderBy
+     * @return Response
      * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     * @throws \Exception
      */
-    public function downloadAddressesAsXlsx(array $arrIds = [], $strOrderBy = ''): Response
+    public function download(array $arrIds = [], string $strOrderBy = ''): Response
     {
         if ('' === $strOrderBy) {
             $strOrderBy = 'funktion, dateOfBirth, name';
@@ -120,16 +123,13 @@ class RszAdressenDownload
 
                 if ('dateOfBirth' === $field) {
                     $value = Date::parse(Config::get('dateFormat'), $value);
-                    $sheet->setCellValue([$col, $row], $value);
                 } elseif (!empty($objUser->{$field}) && \is_array(unserialize($objUser->{$field}))) {
                     $arrValues = unserialize($objUser->{$field});
                     $arrValues = array_filter($arrValues, 'strlen');
                     $value = implode(', ', $arrValues);
-                    $sheet->setCellValue([$col, $row], $value);
-                } else {
-                    $value = $objUser->{$field};
-                    $sheet->setCellValue([$col, $row], $value);
-                }
+                } 
+
+                $sheet->setCellValue([$col, $row], $value);
                 ++$col;
             }
         }

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle\DataContainer;
 
-use Contao\BackendUser;
 use Contao\Config;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
@@ -29,17 +28,12 @@ use Contao\Email;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\Folder;
-use Contao\Input;
 use Contao\MemberModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
-use Markocupic\RszBenutzerverwaltungBundle\Excel\PrepareExportFromSession;
-use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAdressenDownload;
-use PhpOffice\PhpSpreadsheet\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 
 class User
@@ -47,37 +41,16 @@ class User
     public const STR_INFO_FLASH_TYPE = 'contao.BE.info';
 
     private RequestStack $requestStack;
-    private PrepareExportFromSession $prepareExportFromSession;
     private LoggerInterface $contaoGeneralLogger;
     private string $projectDir;
     private Security $security;
-    private RszAdressenDownload $rszAdressenDownload;
 
-    public function __construct(RequestStack $requestStack, Security $security, RszAdressenDownload $rszAdressenDownload, PrepareExportFromSession $prepareExportFromSession, LoggerInterface $contaoGeneralLogger, string $projectDir)
+    public function __construct(RequestStack $requestStack, Security $security, LoggerInterface $contaoGeneralLogger, string $projectDir)
     {
         $this->requestStack = $requestStack;
         $this->security = $security;
-        $this->rszAdressenDownload = $rszAdressenDownload;
-        $this->prepareExportFromSession = $prepareExportFromSession;
         $this->contaoGeneralLogger = $contaoGeneralLogger;
         $this->projectDir = $projectDir;
-    }
-
-    /**
-     * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 100)]
-    public function prepareExcelExport(): Response|null
-    {
-        if ('excelExport' === Input::get('key')) {
-            $arrIds = $this->prepareExportFromSession->getIdsFromSession();
-            $strOrderBy = $this->prepareExportFromSession->getOrderByFromSession();
-
-            return $this->rszAdressenDownload->downloadAddressesAsXlsx($arrIds, $strOrderBy);
-        }
-
-        return null;
     }
 
     /**
