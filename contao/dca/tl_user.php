@@ -389,8 +389,24 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['getPasswordField'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['username']['eval']['tl_class'] = 'clr';
-
 $GLOBALS['TL_DCA']['tl_user']['fields']['name']['eval']['rgxp'] = 'name';
 $GLOBALS['TL_DCA']['tl_user']['fields']['name']['eval']['tl_class'] = 'clr';
-
 $GLOBALS['TL_DCA']['tl_user']['fields']['email']['eval']['tl_class'] = 'clr';
+
+// Extend the default palette with permissions
+PaletteManipulator::create()
+    ->addLegend('rsz_address_download_legend', 'amg_legend', PaletteManipulator::POSITION_BEFORE)
+    ->addField(['rsz_address_downloadp'], 'rsz_address_download_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_user');
+
+// Add fields to tl_user
+$GLOBALS['TL_DCA']['tl_user']['fields']['rsz_address_downloadp'] = [
+    'exclude'   => true,
+    'inputType' => 'checkbox',
+    'options'   => [
+        'main_menu_download',
+    ],
+    'reference' => &$GLOBALS['TL_LANG']['MSC'],
+    'eval'      => ['multiple' => true],
+    'sql'       => 'blob NULL',
+];

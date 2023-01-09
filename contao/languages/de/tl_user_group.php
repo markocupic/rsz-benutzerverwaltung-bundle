@@ -13,8 +13,11 @@ declare(strict_types=1);
  */
 
 /*
- * Backend modules
+ * Legends
  */
-$GLOBALS['TL_LANG']['MOD']['rsz_tools'] = 'Rsz Tools';
-$GLOBALS['TL_LANG']['MOD']['rsz_adressen_download'] = ['RSZ Adressen Download', 'RSZ Adressen als Excel-Liste downloaden'];
-$GLOBALS['TL_LANG']['MOD']['rsz_address_download_main_menu'] = ['RSZ Adressen herunterladen', 'RSZ Adressen als Excel-Liste downloaden'];
+$GLOBALS['TL_LANG']['tl_user_group']['rsz_address_download_legend'] = 'RSZ Adressen-Rechte';
+
+/*
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_user_group']['rsz_address_downloadp'] = ['RSZ Adressen-Rechte', 'Hier können Sie einstellen, wer Zugriff auf die Adressen hat.'];

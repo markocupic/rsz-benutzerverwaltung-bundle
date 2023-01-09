@@ -13,8 +13,6 @@ declare(strict_types=1);
  */
 
 /*
- * Backend modules
+ * Miscellaneous
  */
-$GLOBALS['TL_LANG']['MOD']['rsz_tools'] = 'Rsz Tools';
-$GLOBALS['TL_LANG']['MOD']['rsz_adressen_download'] = ['RSZ Adressen Download', 'RSZ Adressen als Excel-Liste downloaden'];
-$GLOBALS['TL_LANG']['MOD']['rsz_address_download_main_menu'] = ['RSZ Adressen herunterladen', 'RSZ Adressen als Excel-Liste downloaden'];
+$GLOBALS['TL_LANG']['MSC']['main_menu_download'] = 'Adressen herunterladen direkt aus dem Hauptmenu heraus';
