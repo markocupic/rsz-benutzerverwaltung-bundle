@@ -32,7 +32,6 @@ use Contao\MemberModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
-use Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser\MaintainContaoCorePermissions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
@@ -53,17 +52,17 @@ class User
         $this->contaoGeneralLogger = $contaoGeneralLogger;
         $this->projectDir = $projectDir;
     }
+
     /**
      * For ech user do:
      * - Add correct file mount
-     * - Sync tl_user with tl_member
+     * - Sync tl_user with tl_member.
      *
      * @throws \Exception
      */
     #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 101)]
     public function maintainUserProperties(): void
     {
-
         // Remove  orphaned user directories from filesystem
         $this->checkForOrphanedDirectories('athlet');
         $this->checkForOrphanedDirectories('trainer');
@@ -230,6 +229,11 @@ class User
 
         // Skip if the method has been called via cron job or if user is in detail mode.
         if (!$request || $request->query->has('act')) {
+            return;
+        }
+
+        if ($request->query->get('do') !== 'user')
+        {
             return;
         }
 
