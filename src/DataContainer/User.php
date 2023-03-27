@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
+ * @copyright  Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license    MIT
  *
  * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
