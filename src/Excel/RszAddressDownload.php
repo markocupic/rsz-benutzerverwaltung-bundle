@@ -42,9 +42,6 @@ class RszAddressDownload
     }
 
     /**
-     * @param array $arrIds
-     * @param string $strOrderBy
-     * @return Response
      * @throws Exception
      * @throws \Exception
      */
@@ -127,7 +124,7 @@ class RszAddressDownload
                     $arrValues = unserialize($objUser->{$field});
                     $arrValues = array_filter($arrValues, 'strlen');
                     $value = implode(', ', $arrValues);
-                } 
+                }
 
                 $sheet->setCellValue([$col, $row], $value);
                 ++$col;

@@ -15,9 +15,10 @@ declare(strict_types=1);
 /*
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_user_group']['rsz_address_download_legend'] = 'RSZ Adressen-Rechte';
+$GLOBALS['TL_LANG']['tl_user_group']['rsz_permission_legend'] = 'RSZ Benutzer-Rechte';
 
 /*
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_user_group']['rsz_address_downloadp'] = ['RSZ Adressen-Rechte', 'Hier können Sie einstellen, wer Zugriff auf die Adressen hat.'];
+$GLOBALS['TL_LANG']['tl_user_group']['rsz_usersp'] = ['Benutzerrechte für Benutzermodul', 'Hier können Sie einstellen, wer Zugriff auf das Benutzermodul hat.'];

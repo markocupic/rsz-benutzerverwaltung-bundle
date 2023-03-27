@@ -1,12 +1,5 @@
 <?php
 
-/**
- * @copyright  Marko Cupic 2020 <m.cupic@gmx.ch>
- * @license    MIT
- *
- * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
- */
-
 declare(strict_types=1);
 
 /*
@@ -21,8 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle\RszUser;
 
-use Contao\UserModel;
 use Contao\FilesModel;
+use Contao\UserModel;
 
 class RszUser
 {

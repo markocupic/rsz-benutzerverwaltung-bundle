@@ -27,10 +27,8 @@ class MaintainContaoCorePermissionsCron
 
     public function __construct(Connection $connection, MaintainContaoCorePermissions $maintainContaoCorePermissions)
     {
-
         $this->connection = $connection;
         $this->maintainContaoCorePermissions = $maintainContaoCorePermissions;
-
     }
 
     public function __invoke(): void

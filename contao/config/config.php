@@ -16,3 +16,4 @@ declare(strict_types=1);
  * Backend permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'rsz_address_downloadp';
+$GLOBALS['TL_PERMISSIONS'][] = 'rsz_usersp';

@@ -35,20 +35,16 @@ class RszAddressDownloadAllController
     }
 
     /**
-     * @return Response
      * @throws Exception
      */
     public function __invoke(): Response
     {
-
-        if(!$this->security->isGranted('ROLE_ADMIN') && !$this->security->isGranted(RszBackendPermissions::USER_CAN_DOWNLOAD_RSZ_ADDRESSES, 'main_menu_download'))
-{
-    throw new AccessDeniedException('Access to this resource has been denied!');
-}
+        if (!$this->security->isGranted('ROLE_ADMIN') && !$this->security->isGranted(RszBackendPermissions::USER_CAN_DOWNLOAD_RSZ_ADDRESSES, 'main_menu_download')) {
+            throw new AccessDeniedException('Access to this resource has been denied!');
+        }
         $arrIds = []; // All
         $strOrderBy = 'name';
 
         return $this->rszAddressDownload->download($arrIds, $strOrderBy);
     }
-
 }

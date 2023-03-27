@@ -16,3 +16,5 @@ declare(strict_types=1);
  * Miscellaneous
  */
 $GLOBALS['TL_LANG']['MSC']['main_menu_download'] = 'Adressen herunterladen direkt aus dem Hauptmenu heraus';
+$GLOBALS['TL_LANG']['MSC']['can_edit_rsz_users'] = 'Darf Benutzer bearbeiten/kopieren';
+$GLOBALS['TL_LANG']['MSC']['can_delete_rsz_users'] = 'Darf Benutzer löschen';

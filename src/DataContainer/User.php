@@ -22,16 +22,22 @@ declare(strict_types=1);
 namespace Markocupic\RszBenutzerverwaltungBundle\DataContainer;
 
 use Contao\Config;
+use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Framework\Adapter;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\DataContainer;
 use Contao\Email;
 use Contao\Environment;
 use Contao\FilesModel;
 use Contao\Folder;
+use Contao\Image;
 use Contao\MemberModel;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
+use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
@@ -40,21 +46,92 @@ class User
 {
     public const STR_INFO_FLASH_TYPE = 'contao.BE.info';
 
-    private RequestStack $requestStack;
-    private Security $security;
-    private LoggerInterface $contaoGeneralLogger;
-    private string $projectDir;
+    private Adapter $controller;
+    private Adapter $image;
+    private Adapter $stringUtil;
 
-    public function __construct(RequestStack $requestStack, Security $security, LoggerInterface $contaoGeneralLogger, string $projectDir)
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly RequestStack $requestStack,
+        private readonly Security $security,
+        private readonly LoggerInterface $contaoGeneralLogger,
+        private readonly string $projectDir,
+    ) {
+        $this->controller = $this->framework->getAdapter(Controller::class);
+        $this->image = $this->framework->getAdapter(Image::class);
+        $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
+    }
+
+    #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 101)]
+    public function checkPermission(): void
     {
-        $this->requestStack = $requestStack;
-        $this->security = $security;
-        $this->contaoGeneralLogger = $contaoGeneralLogger;
-        $this->projectDir = $projectDir;
+        $request = $this->requestStack->getCurrentRequest();
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+
+        if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_edit_rsz_users')) {
+            $GLOBALS['TL_DCA']['tl_user']['config']['notEditable'] = true;
+            $GLOBALS['TL_DCA']['tl_user']['config']['notCopyable'] = true;
+            $GLOBALS['TL_DCA']['tl_user']['config']['notCreatable'] = true;
+        }
+
+        if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_delete_rsz_users')) {
+            $GLOBALS['TL_DCA']['tl_user']['config']['notDeletable'] = true;
+        }
+
+        // Check current action
+        switch ($request->query->get('act')) {
+            case 'create':
+            case 'edit':
+            case 'copy':
+            case 'overrideAll':
+            case 'editAll':
+            case 'toggle':
+                if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_edit_rsz_users')) {
+                    throw new AccessDeniedException('Not enough permissions to '.$request->query->get('act').' user with ID '.$request->query->get('id').'.');
+                }
+                break;
+            case 'delete':
+            case 'deleteAll':
+            if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_delete_rsz_users')) {
+                throw new AccessDeniedException('Not enough permissions to '.$request->query->get('act').' user with ID '.$request->query->get('id').'.');
+            }
+        }
+    }
+
+    #[AsCallback(table: 'tl_user', target: 'list.operations.delete.button', priority: 101)]
+    public function deleteUser($row, $href, $label, $title, $icon, $attributes)
+    {
+        $grant = false;
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $grant = true;
+        } elseif ($this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_delete_rsz_users')) {
+            $grant = true;
+        }
+
+        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+    }
+
+    #[AsCallback(table: 'tl_user', target: 'list.operations.edit.button', priority: 101)]
+    #[AsCallback(table: 'tl_user', target: 'list.operations.copy.button', priority: 101)]
+    public function editOrCopyUser($row, $href, $label, $title, $icon, $attributes)
+    {
+        $grant = false;
+
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $grant = true;
+        } elseif ($this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_edit_rsz_users')) {
+            $grant = true;
+        }
+
+        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
-     * For ech user do:
+     * For each user do:
      * - Add correct file mount
      * - Sync tl_user with tl_member.
      *
@@ -93,7 +170,7 @@ class User
 
             if (!empty($objUser->funktion)) {
                 foreach ($arrGroups as $strFunction) {
-                    if (\in_array($strFunction, StringUtil::deserialize($objUser->funktion, true), true)) {
+                    if (\in_array($strFunction, $this->stringUtil->deserialize($objUser->funktion, true), true)) {
                         $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.strtolower($strFunction).'/'.$objUser->username.'/my_profile/my_pics';
 
                         if (!file_exists($this->projectDir.'/'.$strFolder)) {
@@ -104,7 +181,7 @@ class User
                         // Add file mount for the user directory
                         $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.strtolower($strFunction).'/'.$objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
-                        $arrFileMounts = StringUtil::deserialize($objUser->filemounts, true);
+                        $arrFileMounts = $this->stringUtil->deserialize($objUser->filemounts, true);
                         $arrFileMounts[] = $objFile->uuid;
                         $objUser->filemounts = serialize(array_unique($arrFileMounts));
                         $objUser->inherit = 'extend';
@@ -232,8 +309,7 @@ class User
             return;
         }
 
-        if ($request->query->get('do') !== 'user')
-        {
+        if ('user' !== $request->query->get('do')) {
             return;
         }
 
@@ -248,7 +324,7 @@ class User
             // Display message if a directory must be deleted
             if ($this->security->isGranted('ROLE_ADMIN')) {
                 if (null !== $objUser && is_dir($this->projectDir.'/'.$strFolder.'/'.$strUserDir)) {
-                    $arrGroups = array_map('strtolower', StringUtil::deserialize($objUser->funktion, true));
+                    $arrGroups = array_map('strtolower', $this->stringUtil->deserialize($objUser->funktion, true));
 
                     if (!\in_array($strFunktion, $arrGroups, true)) {
                         $msg = $strFolder.'/'.$strUserDir.' kann gelöscht werden, da '.$objUser->username.' keine '.ucfirst($strFunktion).'-Funktion (mehr) innehat!';
