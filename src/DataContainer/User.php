@@ -112,7 +112,7 @@ class User
             $grant = true;
         }
 
-        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id'],true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     #[AsCallback(table: 'tl_user', target: 'list.operations.edit.button', priority: 101)]
@@ -127,7 +127,7 @@ class User
             $grant = true;
         }
 
-        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id'],true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
