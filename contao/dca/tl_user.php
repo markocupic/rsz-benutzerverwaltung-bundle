@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
-use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
+use Contao\DataContainer;
 
 // Extend admin, extend, default and custom palette
 PaletteManipulator::create()
@@ -23,6 +23,8 @@ PaletteManipulator::create()
     ->addLegend('information_legend', 'name_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('extended_data', 'name_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('contact_legend', 'name_legend', PaletteManipulator::POSITION_AFTER)
+    ->addLegend('parent_legend', 'contact_legend', PaletteManipulator::POSITION_AFTER)
+
     // Add email to the contact legend
     ->removeField(['email'], 'name_legend')
     ->addField(
@@ -36,8 +38,13 @@ PaletteManipulator::create()
         PaletteManipulator::POSITION_APPEND
     )
     ->addField(
-        ['email', 'telephone', 'mobile', 'alternate_email', 'alternate_email_2', 'url'],
+        ['email', 'telephone', 'mobile', 'url'],
         'contact_legend',
+        PaletteManipulator::POSITION_APPEND
+    )
+    ->addField(
+        ['mother_firstname', 'mother_lastname', 'mother_email', 'mother_mobile', 'father_firstname', 'father_lastname', 'father_email', 'father_mobile',],
+        'parent_legend',
         PaletteManipulator::POSITION_APPEND
     )
     ->addField(
@@ -108,7 +115,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['isRSZ'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => ['' => 'false', '1' => 'true'],
     'default'   => 1,
@@ -132,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['street'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
@@ -142,7 +149,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['postal'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['maxlength' => 4, 'tl_class' => ''],
     'sql'       => "varchar(32) NOT NULL default ''",
@@ -152,7 +159,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['city'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
@@ -162,7 +169,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['telephone'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['mandatory' => false, 'rgxp' => 'phone', 'maxlength' => 13, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
@@ -172,29 +179,9 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['mobile'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['mandatory' => false, 'rgxp' => 'phone', 'maxlength' => 13, 'tl_class' => ''],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-
-$GLOBALS['TL_DCA']['tl_user']['fields']['alternate_email'] = [
-    'search'    => true,
-    'exclude'   => true,
-    'sorting'   => true,
-    'flag'      => 1,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => false, 'rgxp' => 'email', 'tl_class' => ''],
-    'sql'       => "varchar(255) NOT NULL default ''",
-];
-
-$GLOBALS['TL_DCA']['tl_user']['fields']['alternate_email_2'] = [
-    'search'    => true,
-    'exclude'   => true,
-    'sorting'   => true,
-    'flag'      => 1,
-    'inputType' => 'text',
-    'eval'      => ['mandatory' => false, 'rgxp' => 'email', 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
@@ -202,9 +189,79 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['url'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['mandatory' => false, 'rgxp' => 'url', 'maxlength' => 255, 'tl_class' => ''],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['mother_firstname'] = [
+    'search'    => true,
+    'exclude'   => true,
+    'sorting'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['mother_lastname'] = [
+    'search'    => true,
+    'exclude'   => true,
+    'sorting'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['mother_email'] = [
+    'exclude'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['mother_mobile'] = [
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['father_firstname'] = [
+    'search'    => true,
+    'exclude'   => true,
+    'sorting'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['father_lastname'] = [
+    'search'    => true,
+    'exclude'   => true,
+    'sorting'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['father_email'] = [
+    'exclude'   => true,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 255, 'rgxp' => 'email', 'decodeEntities' => true, 'tl_class' => 'w50'],
+    'sql'       => "varchar(255) NOT NULL default ''",
+];
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['father_mobile'] = [
+    'exclude'   => true,
+    'inputType' => 'text',
+    'eval'      => ['maxlength' => 64, 'rgxp' => 'phone', 'decodeEntities' => true, 'tl_class' => 'w50'],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
@@ -213,7 +270,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['kategorie'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => System::getContainer()->getParameter('rsz-wettkampfkategorien'),
     'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => '', 'includeBlankOption' => true],
@@ -224,7 +281,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['link_digitalrock'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
@@ -235,7 +292,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['niveau'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_niveau']),
     'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
@@ -247,7 +304,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerFromGroup'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainingsgruppe']),
     'eval'      => ['includeBlankOption' => true, 'tl_class' => '', 'multiple' => true, 'chosen' => true],
@@ -259,7 +316,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainingsgruppe'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => explode(',', $GLOBALS['TL_CONFIG']['mcupic_be_benutzerverwaltung_trainingsgruppe']),
     'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
@@ -271,7 +328,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktion'] = [
     'filter'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'checkbox',
     'options'   => System::getContainer()->getParameter('rsz-funktion'),
     'eval'      => ['mandatory' => false, 'multiple' => true, 'tl_class' => ''],
@@ -282,7 +339,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktionsbeschreibung'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['tl_class' => ''],
     'sql'       => "varchar(255) NOT NULL default ''",
@@ -292,7 +349,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['ahv_nr'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'default'   => '756.',
     'eval'      => ['tl_class' => '', 'maxlength' => 16],
@@ -303,7 +360,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['iban'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['tl_class' => '', 'maxlength' => 26],
     'sql'       => "varchar(26) NOT NULL default ''",
@@ -313,7 +370,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['js_nr'] = [
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'text',
     'eval'      => ['tl_class' => '', 'maxlength' => 8, 'rgxp' => 'natural'],
     'sql'       => "varchar(8) NOT NULL default ''",
@@ -324,7 +381,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerqualifikation'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'checkbox',
     'options'   => System::getContainer()->getParameter('rsz-leiterqualifikation'),
     'eval'      => ['multiple' => true, 'tl_class' => ''],
@@ -336,7 +393,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['nationalmannschaft'] = [
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => ['' => 'false', '1' => 'true'],
     'eval'      => ['tl_class' => ''],
@@ -357,7 +414,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['sac_sektion'] = [
     'search'    => true,
     'sorting'   => true,
     'filter'    => true,
-    'flag'      => 1,
+    'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
     'options'   => System::getContainer()->getParameter('rsz-sac-sektionen'),
     'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],

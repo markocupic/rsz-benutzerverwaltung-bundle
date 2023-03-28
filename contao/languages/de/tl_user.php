@@ -16,6 +16,7 @@ declare(strict_types=1);
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_user']['contact_legend'] = 'Kontaktangaben';
+$GLOBALS['TL_LANG']['tl_user']['parent_legend'] = 'Kontaktangaben Eltern/Erziehungsberechtigte';
 $GLOBALS['TL_LANG']['tl_user']['admin_legend'] = 'Administrator';
 $GLOBALS['TL_LANG']['tl_user']['information_legend'] = 'Weitere Angaben zur Person';
 $GLOBALS['TL_LANG']['tl_user']['trainer_legend'] = 'Trainerangaben';
@@ -47,8 +48,14 @@ $GLOBALS['TL_LANG']['tl_user']['kategorie'] = ['Wettkampf-Kategorie', 'Bitte geb
 $GLOBALS['TL_LANG']['tl_user']['telephone'] = ['Festnetz-Telefonnummer', 'Festnetznummer im Format 041 000 00 00'];
 $GLOBALS['TL_LANG']['tl_user']['mobile'] = ['Natelnummer', 'Natelnummer im Format 079 000 00 00'];
 $GLOBALS['TL_LANG']['tl_user']['email'] = ['E-Mail-Adresse', 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'];
-$GLOBALS['TL_LANG']['tl_user']['alternate_email'] = ['E-Mail-Adresse der Eltern / 2. Email-Adresse', 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'];
-$GLOBALS['TL_LANG']['tl_user']['alternate_email_2'] = ['weitere E-Mail-Adresse der Eltern (z.B. bei getrennt lebenden Erziehungsberechtigten Paaren)', 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'];
+$GLOBALS['TL_LANG']['tl_user']['mother_firstname'] = ['Vorname Mutter', 'Bitte geben Sie den Vornamen der Mutter ein.'];
+$GLOBALS['TL_LANG']['tl_user']['father_firstname'] = ['Vorname Vater', 'Bitte geben Sie den Vornamen des Vaters ein.'];
+$GLOBALS['TL_LANG']['tl_user']['mother_lastname'] = ['Nachname Mutter', 'Bitte geben Sie den Nachnamen der Mutter ein.'];
+$GLOBALS['TL_LANG']['tl_user']['father_lastname'] = ['Nachname Vater', 'Bitte geben Sie den Nachnamen des Vaters ein.'];
+$GLOBALS['TL_LANG']['tl_user']['mother_email'] = ['E-Mail-Adresse Mutter', 'Bitte geben Sie die E-Mail-Adresse der Mutter ein.'];
+$GLOBALS['TL_LANG']['tl_user']['father_email'] = ['E-Mail-Adresse Vater', 'Bitte geben Sie die E-Mail-Adresse des Vaters ein.'];
+$GLOBALS['TL_LANG']['tl_user']['mother_mobile'] = ['Mobiltelefon Mutter', 'Bitte geben Sie die Mobile-Nummer der Mutter ein.'];
+$GLOBALS['TL_LANG']['tl_user']['father_mobile'] = ['Mobiltelefon Vater', 'Bitte geben Sie die Mobile-Nummer des Vaters ein.'];
 $GLOBALS['TL_LANG']['tl_user']['nationalmannschaft'] = ['Mitglied Nationalmannschaft', ''];
 $GLOBALS['TL_LANG']['tl_user']['funktionsbeschreibung'] = ['Genauere Angaben zur Funktion', 'Weitere Aufgaben im Verein, usw.'];
 $GLOBALS['TL_LANG']['tl_user']['trainerqualifikation'] = ['J&S-Leiterstatus', 'Falls du über eine gültige J&S-Qualifikation, verfügst.'];
