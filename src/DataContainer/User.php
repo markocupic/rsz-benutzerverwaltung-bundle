@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle\DataContainer;
 
+use Contao\Backend;
 use Contao\Config;
 use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
@@ -46,7 +47,7 @@ class User
 {
     public const STR_INFO_FLASH_TYPE = 'contao.BE.info';
 
-    private Adapter $controller;
+    private Adapter $backend;
     private Adapter $image;
     private Adapter $stringUtil;
 
@@ -57,7 +58,7 @@ class User
         private readonly LoggerInterface $contaoGeneralLogger,
         private readonly string $projectDir,
     ) {
-        $this->controller = $this->framework->getAdapter(Controller::class);
+        $this->backend = $this->framework->getAdapter(Backend::class);
         $this->image = $this->framework->getAdapter(Image::class);
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
     }
@@ -112,7 +113,7 @@ class User
             $grant = true;
         }
 
-        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id'],true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $grant ? '<a href="'.$this->backend->addToUrl($href.'&amp;id='.$row['id'], true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     #[AsCallback(table: 'tl_user', target: 'list.operations.edit.button', priority: 101)]
@@ -127,7 +128,7 @@ class User
             $grant = true;
         }
 
-        return $grant ? '<a href="'.$this->controller->addToUrl($href.'&amp;id='.$row['id'],true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
+        return $grant ? '<a href="'.$this->backend->addToUrl($href.'&amp;id='.$row['id'], true).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
     /**
