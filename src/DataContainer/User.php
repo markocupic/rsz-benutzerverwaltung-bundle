@@ -23,7 +23,6 @@ namespace Markocupic\RszBenutzerverwaltungBundle\DataContainer;
 
 use Contao\Backend;
 use Contao\Config;
-use Contao\Controller;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\Adapter;
@@ -69,6 +68,11 @@ class User
         $request = $this->requestStack->getCurrentRequest();
 
         if ($this->security->isGranted('ROLE_ADMIN')) {
+            return;
+        }
+
+        if ($request->query->get('do') === 'login')
+        {
             return;
         }
 

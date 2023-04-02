@@ -78,6 +78,7 @@ PaletteManipulator::create()
     ->addLegend('extended_data', 'name_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('information_legend', 'name_legend', PaletteManipulator::POSITION_AFTER)
     ->addLegend('contact_legend', 'name_legend', PaletteManipulator::POSITION_AFTER)
+    ->addLegend('parent_legend', 'contact_legend', PaletteManipulator::POSITION_AFTER)
     ->removeField(['email'], 'name_legend')
     ->addField(
         ['gender', 'street', 'postal', 'city', 'dateOfBirth', 'avatar'],
@@ -92,6 +93,11 @@ PaletteManipulator::create()
     ->addField(
         ['email', 'telephone', 'mobile', 'url'],
         'contact_legend',
+        PaletteManipulator::POSITION_APPEND
+    )
+    ->addField(
+        ['mother_firstname', 'mother_lastname', 'mother_email', 'mother_mobile', 'father_firstname', 'father_lastname', 'father_email', 'father_mobile',],
+        'parent_legend',
         PaletteManipulator::POSITION_APPEND
     )
     ->addField(
