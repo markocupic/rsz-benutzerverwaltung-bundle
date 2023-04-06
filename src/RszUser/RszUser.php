@@ -16,6 +16,7 @@ namespace Markocupic\RszBenutzerverwaltungBundle\RszUser;
 
 use Contao\FilesModel;
 use Contao\UserModel;
+use Markocupic\RszBenutzerverwaltungBundle\Cron\AutoUpdateWettkampfkategorieCron;
 
 class RszUser
 {

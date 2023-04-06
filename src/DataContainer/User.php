@@ -71,8 +71,7 @@ class User
             return;
         }
 
-        if ($request->query->get('do') === 'login')
-        {
+        if ('login' === $request->query->get('do')) {
             return;
         }
 
@@ -176,7 +175,7 @@ class User
             if (!empty($objUser->funktion)) {
                 foreach ($arrGroups as $strFunction) {
                     if (\in_array($strFunction, $this->stringUtil->deserialize($objUser->funktion, true), true)) {
-                        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.strtolower($strFunction).'/'.$objUser->username.'/my_profile/my_pics';
+                        $strFolder = System::getContainer()->getParameter('rsz_benutzerverwaltung.user_home_dir').'/'.strtolower($strFunction).'/'.$objUser->username.'/my_profile/my_pics';
 
                         if (!file_exists($this->projectDir.'/'.$strFolder)) {
                             // Create user directory
@@ -184,7 +183,7 @@ class User
                         }
 
                         // Add file mount for the user directory
-                        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.strtolower($strFunction).'/'.$objUser->username;
+                        $strFolder = System::getContainer()->getParameter('rsz_benutzerverwaltung.user_home_dir').'/'.strtolower($strFunction).'/'.$objUser->username;
                         $objFile = FilesModel::findByPath($strFolder);
                         $arrFileMounts = $this->stringUtil->deserialize($objUser->filemounts, true);
                         $arrFileMounts[] = $objFile->uuid;
@@ -301,7 +300,7 @@ class User
      */
     private function checkForOrphanedDirectories($strFunktion): void
     {
-        $strFolder = System::getContainer()->getParameter('rsz-user-file-directory').'/'.$strFunktion;
+        $strFolder = System::getContainer()->getParameter('rsz_benutzerverwaltung.user_home_dir').'/'.$strFunktion;
 
         if (!file_exists($this->projectDir.'/'.$strFolder)) {
             return;

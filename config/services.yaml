@@ -5,6 +5,7 @@ services:
     public: true
     bind:
       $projectDir: '%kernel.project_dir%'
+      $rszWettkampfkategorienMap: '%rsz_benutzerverwaltung.wettkampfkategorien%'
 
   Markocupic\RszBenutzerverwaltungBundle\:
     resource: ../src/

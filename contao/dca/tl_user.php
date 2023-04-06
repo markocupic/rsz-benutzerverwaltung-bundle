@@ -271,15 +271,15 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['father_mobile'] = [
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
-$GLOBALS['TL_DCA']['tl_user']['fields']['kategorie'] = [
+$GLOBALS['TL_DCA']['tl_user']['fields']['kategorie'] = [// Readonly field & auto-updated by CRON
     'search'    => true,
     'exclude'   => true,
     'sorting'   => true,
     'filter'    => true,
     'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
-    'options'   => System::getContainer()->getParameter('rsz-wettkampfkategorien'),
-    'eval'      => ['mandatory' => false, 'maxlength' => 255, 'tl_class' => '', 'includeBlankOption' => true],
+    'options'   => array_keys(System::getContainer()->getParameter('rsz_benutzerverwaltung.wettkampfkategorien')),
+    'eval'      => ['readonly' => true, 'mandatory' => false, 'maxlength' => 255, 'tl_class' => '', 'includeBlankOption' => true],
     'sql'       => "varchar(255) NOT NULL default ''",
 ];
 
@@ -336,7 +336,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['funktion'] = [
     'sorting'   => true,
     'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'checkbox',
-    'options'   => System::getContainer()->getParameter('rsz-funktion'),
+    'options'   => System::getContainer()->getParameter('rsz_benutzerverwaltung.rsz_roles'),
     'eval'      => ['mandatory' => false, 'multiple' => true, 'tl_class' => ''],
     'sql'       => 'blob NULL',
 ];
@@ -389,8 +389,9 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['trainerqualifikation'] = [
     'filter'    => true,
     'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'checkbox',
-    'options'   => System::getContainer()->getParameter('rsz-leiterqualifikation'),
+    'options'   => System::getContainer()->getParameter('rsz_benutzerverwaltung.leader_qualification'),
     'eval'      => ['multiple' => true, 'tl_class' => ''],
+    'sql'       => 'blob NULL',
     'sql'       => 'blob NULL',
 ];
 
@@ -422,7 +423,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['sac_sektion'] = [
     'filter'    => true,
     'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
     'inputType' => 'select',
-    'options'   => System::getContainer()->getParameter('rsz-sac-sektionen'),
+    'options'   => System::getContainer()->getParameter('rsz_benutzerverwaltung.sac_sections'),
     'eval'      => ['includeBlankOption' => true, 'tl_class' => ''],
     'sql'       => 'blob NULL',
 ];

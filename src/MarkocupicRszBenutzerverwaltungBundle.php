@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\RszBenutzerverwaltungBundle;
 
+use Markocupic\RszBenutzerverwaltungBundle\DependencyInjection\MarkocupicRszBenutzerverwaltungExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class MarkocupicRszBenutzerverwaltungBundle extends Bundle
@@ -22,4 +24,20 @@ class MarkocupicRszBenutzerverwaltungBundle extends Bundle
     {
         return \dirname(__DIR__);
     }
+
+    public function getContainerExtension(): MarkocupicRszBenutzerverwaltungExtension
+    {
+        // Set alias rsz_benutzerverwaltung
+        return new MarkocupicRszBenutzerverwaltungExtension();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+    }
+
+
 }
