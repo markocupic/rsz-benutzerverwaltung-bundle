@@ -21,14 +21,14 @@ use Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser\MaintainConta
 #[AsCronJob('daily')]
 class MaintainContaoCorePermissionsCron
 {
-    private Connection $connection;
 
-    private MaintainContaoCorePermissions $maintainContaoCorePermissions;
 
-    public function __construct(Connection $connection, MaintainContaoCorePermissions $maintainContaoCorePermissions)
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly MaintainContaoCorePermissions $maintainContaoCorePermissions,
+    )
     {
-        $this->connection = $connection;
-        $this->maintainContaoCorePermissions = $maintainContaoCorePermissions;
+
     }
 
     public function __invoke(): void

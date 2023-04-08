@@ -17,25 +17,23 @@ namespace Markocupic\RszBenutzerverwaltungBundle\Controller\ContaoBackend;
 use Contao\CoreBundle\Event\MenuEvent;
 use Contao\StringUtil;
 use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
-use Terminal42\ServiceAnnotationBundle\Annotation\ServiceTag;
 
-/**
- * @ServiceTag("kernel.event_listener", event="contao.backend_menu_build", priority=-255)
- */
+#[AsEventListener(event: 'contao.backend_menu_build', priority: -255)]
 class BackendMenuListener
 {
-    protected $router;
-    private Security $security;
-    private RequestStack $requestStack;
 
-    public function __construct(RouterInterface $router, Security $security, RequestStack $requestStack)
+
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly Security $security,
+        private  readonly RequestStack $requestStack,
+    )
     {
-        $this->router = $router;
-        $this->security = $security;
-        $this->requestStack = $requestStack;
+
     }
 
     public function __invoke(MenuEvent $event): void

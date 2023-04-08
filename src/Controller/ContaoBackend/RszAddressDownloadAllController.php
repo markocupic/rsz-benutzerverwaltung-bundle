@@ -25,13 +25,14 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/contao/_rsz_address_download_all', name: RszAddressDownloadAllController::class, defaults: ['_scope' => 'backend'])]
 class RszAddressDownloadAllController
 {
-    private RszAddressDownload $rszAddressDownload;
-    private Security $security;
 
-    public function __construct(Security $security, RszAddressDownload $rszAddressDownload)
+
+    public function __construct(
+        private readonly Security $security,
+        private readonly RszAddressDownload $rszAddressDownload,
+    )
     {
-        $this->security = $security;
-        $this->rszAddressDownload = $rszAddressDownload;
+
     }
 
     /**

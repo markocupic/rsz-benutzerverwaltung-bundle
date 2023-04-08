@@ -23,15 +23,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class CheckCredentialsListener
 {
-    private LoggerInterface $contaoGeneralLogger;
-    private RequestStack $requestStack;
-    private ScopeMatcher $scopeMatcher;
 
-    public function __construct(RequestStack $requestStack, ScopeMatcher $scopeMatcher, LoggerInterface $contaoGeneralLogger)
+
+    public function __construct(
+        private readonly ?LoggerInterface $contaoGeneralLogger,
+        private readonly RequestStack $requestStack,
+        private readonly ScopeMatcher $scopeMatcher,
+    )
     {
-        $this->contaoGeneralLogger = $contaoGeneralLogger;
-        $this->requestStack = $requestStack;
-        $this->scopeMatcher = $scopeMatcher;
+
     }
 
     /**
@@ -45,7 +45,7 @@ class CheckCredentialsListener
         if ($request && $this->scopeMatcher->isFrontendRequest($request)) {
             if (null !== ($objUser = UserModel::findByAssignedMember($user->id))) {
                 if (password_verify($credentials, $objUser->password)) {
-                    $this->contaoGeneralLogger->info(sprintf(
+                    $this->contaoGeneralLogger?->info(sprintf(
                         'Contao member with username "%s" has logged in into the frontend using his backend password.',
                         $username
                     ));

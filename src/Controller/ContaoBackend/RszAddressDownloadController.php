@@ -24,15 +24,15 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/contao/_rsz_address_download', name: 'markocupic_rsz_benutzerverwaltung_rsz_address_download', defaults: ['_scope' => 'backend'])]
 class RszAddressDownloadController
 {
-    private Connection $connection;
-    private RequestStack $requestStack;
-    private RszAddressDownload $rszAddressDownload;
 
-    public function __construct(Connection $connection, RequestStack $requestStack, RszAddressDownload $rszAddressDownload)
+
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly RequestStack $requestStack,
+        private readonly RszAddressDownload $rszAddressDownload,
+    )
     {
-        $this->connection = $connection;
-        $this->requestStack = $requestStack;
-        $this->rszAddressDownload = $rszAddressDownload;
+
     }
 
     /**

@@ -27,15 +27,16 @@ use Doctrine\DBAL\Exception;
  */
 class MaintainContaoCorePermissions
 {
-    private ContaoFramework $framework;
-    private Connection $connection;
+
     private Adapter $stringUtil;
     private Adapter $date;
 
-    public function __construct(ContaoFramework $framework, Connection $connection)
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly Connection $connection,
+    )
     {
-        $this->framework = $framework;
-        $this->connection = $connection;
+
 
         // Adapters
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
