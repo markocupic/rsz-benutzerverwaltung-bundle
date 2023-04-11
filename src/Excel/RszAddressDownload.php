@@ -88,6 +88,7 @@ class RszAddressDownload
             'funktion',
             'niveau',
             'js_nr',
+            'kategorie',
             'trainingsgruppe',
             'nationalmannschaft',
             'trainerqualifikation',
