@@ -412,7 +412,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['dateOfBirth'] = [
     'search'    => true,
     'sorting'   => true,
     'inputType' => 'text',
-    'eval'      => ['maxlength' => 10, 'datepicker' => $this->getDatePickerString(), 'submitOnChange' => false, 'rgxp' => 'date', 'tl_class' => ' wizard'],
+    'eval'      => ['maxlength' => 10, 'datepicker' => true, 'submitOnChange' => false, 'rgxp' => 'date', 'tl_class' => ' wizard'],
     'sql'       => "int(14) NOT NULL default '0'",
 ];
 
