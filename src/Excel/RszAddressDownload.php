@@ -122,8 +122,7 @@ class RszAddressDownload
             ;
         } else {
             $objUser = $this->database->getInstance()
-                ->prepare('SELECT * FROM tl_user WHERE id IN ('.implode(',', array_map('intval', $arrIds)).') ORDER BY '.$strOrderBy)
-                ->execute('1')
+                ->execute('SELECT * FROM tl_user WHERE id IN ('.implode(',', array_map('intval', $arrIds)).') ORDER BY '.$strOrderBy)
             ;
         }
 
