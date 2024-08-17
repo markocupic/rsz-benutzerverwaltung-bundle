@@ -20,19 +20,15 @@ use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use PhpOffice\PhpSpreadsheet\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/contao/_rsz_address_download_all', name: RszAddressDownloadAllController::class, defaults: ['_scope' => 'backend'])]
 class RszAddressDownloadAllController
 {
-
-
     public function __construct(
         private readonly Security $security,
         private readonly RszAddressDownload $rszAddressDownload,
-    )
-    {
-
+    ) {
     }
 
     /**

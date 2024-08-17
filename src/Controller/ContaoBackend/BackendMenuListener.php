@@ -20,20 +20,16 @@ use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsEventListener(event: 'contao.backend_menu_build', priority: -255)]
 class BackendMenuListener
 {
-
-
     public function __construct(
         private readonly RouterInterface $router,
         private readonly Security $security,
-        private  readonly RequestStack $requestStack,
-    )
-    {
-
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function __invoke(MenuEvent $event): void

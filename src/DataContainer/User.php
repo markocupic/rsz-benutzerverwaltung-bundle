@@ -40,7 +40,7 @@ use Contao\UserModel;
 use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class User
 {
