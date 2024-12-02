@@ -1,3 +1,0 @@
-contao:
-    resource: '@MarkocupicRszBenutzerverwaltungBundle/src/Controller'
-    type: attribute

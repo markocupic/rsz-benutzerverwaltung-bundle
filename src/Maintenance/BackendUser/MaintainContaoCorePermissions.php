@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -27,17 +27,13 @@ use Doctrine\DBAL\Exception;
  */
 class MaintainContaoCorePermissions
 {
-
     private Adapter $stringUtil;
     private Adapter $date;
 
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly Connection $connection,
-    )
-    {
-
-
+    ) {
         // Adapters
         $this->stringUtil = $this->framework->getAdapter(StringUtil::class);
         $this->date = $this->framework->getAdapter(Date::class);

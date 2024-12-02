@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -18,9 +18,9 @@ use Contao\CoreBundle\Exception\AccessDeniedException;
 use Markocupic\RszBenutzerverwaltungBundle\Excel\RszAddressDownload;
 use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use PhpOffice\PhpSpreadsheet\Exception;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[Route('/contao/_rsz_address_download_all', name: RszAddressDownloadAllController::class, defaults: ['_scope' => 'backend'])]
 class RszAddressDownloadAllController

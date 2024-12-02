@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @copyright  Marko Cupic 2023 <m.cupic@gmx.ch>
+ * @copyright  Marko Cupic <m.cupic@gmx.ch>
  * @license    MIT
  *
  * @see        https://github.com/markocupic/rsz-benutzerverwaltung-bundle
@@ -12,7 +12,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -39,8 +39,8 @@ use Contao\System;
 use Contao\UserModel;
 use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class User
 {

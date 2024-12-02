@@ -12,14 +12,14 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/rsz-benutzerverwaltung-bundle
  */
 
-namespace Markocupic\RszBenutzerverwaltungBundle\Cron;
+namespace Markocupic\RszBenutzerverwaltungBundle\Controller;
 
-use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Doctrine\DBAL\Connection;
 use Markocupic\RszBenutzerverwaltungBundle\Maintenance\BackendUser\MaintainContaoCorePermissions;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-#[AsCronJob('daily')]
-class MaintainContaoCorePermissionsCron
+class TestController
 {
     public function __construct(
         private readonly Connection $connection,
@@ -27,12 +27,15 @@ class MaintainContaoCorePermissionsCron
     ) {
     }
 
-    public function __invoke(): void
+    #[Route('/test', name: self::class, defaults: ['_scope' => 'backend'])]
+    public function test(): Response
     {
-        $result = $this->connection->executeQuery('SELECT id FROM tl_user WHERE isRsz = ?', ['1']);
+        $id = $this->connection->fetchOne('SELECT id FROM tl_user WHERE username = ?', ['lauraspescha']);
 
-        while (false !== ($id = $result->fetchOne())) {
-            $this->maintainContaoCorePermissions->resetContaoCorePermissions($id, [], true);
-        }
+        $this->maintainContaoCorePermissions->resetContaoCorePermissions($id, [], true);
+
+        return new Response(
+            '<html><body>Test</body></html>'
+        );
     }
 }

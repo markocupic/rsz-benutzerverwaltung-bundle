@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of RSZ Benutzerverwaltung Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,10 +17,10 @@ namespace Markocupic\RszBenutzerverwaltungBundle\Controller\ContaoBackend;
 use Contao\CoreBundle\Event\MenuEvent;
 use Contao\StringUtil;
 use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsEventListener(event: 'contao.backend_menu_build', priority: -255)]
 class BackendMenuListener
