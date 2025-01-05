@@ -22,7 +22,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 
-#[AsCronJob('hourly')]
+#[AsCronJob('minutely')]
 class AutoUpdateWettkampfkategorieCron
 {
     public function __construct(
@@ -32,10 +32,15 @@ class AutoUpdateWettkampfkategorieCron
     ) {
     }
 
+    public function __invoke(): void
+    {
+        $this->autoUpdateWettkampfKategorie();
+    }
+
     /**
      * @throws Exception
      */
-    public function __invoke(): void
+    public function autoUpdateWettkampfKategorie(): void
     {
         $users = $this->connection->fetchAllAssociative('SELECT id, kategorie, gender, dateOfBirth FROM tl_user');
 
