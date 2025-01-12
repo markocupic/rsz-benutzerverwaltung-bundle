@@ -58,7 +58,7 @@ PaletteManipulator::create()
         PaletteManipulator::POSITION_APPEND
     )
     ->addField(
-        ['nationalmannschaft', 'niveau', 'trainingsgruppe', 'link_digitalrock', 'kategorie'],
+        ['nationalmannschaft', 'paraclimbing_athlete', 'niveau', 'trainingsgruppe', 'link_digitalrock', 'kategorie'],
         'athlete_legend',
         PaletteManipulator::POSITION_APPEND
     )
@@ -407,6 +407,16 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['nationalmannschaft'] = [
     'sql'       => "char(1) NOT NULL default ''",
 ];
 
+$GLOBALS['TL_DCA']['tl_user']['fields']['paraclimbing_athlete'] = [
+    'search'    => true,
+    'exclude'   => true,
+    'sorting'   => true,
+    'filter'    => true,
+    'inputType' => 'checkbox',
+    'eval'      => ['submitOnChange' => true],
+    'sql'       => ['type' => 'boolean', 'default' => false],
+];
+
 $GLOBALS['TL_DCA']['tl_user']['fields']['dateOfBirth'] = [
     'exclude'   => true,
     'search'    => true,
@@ -446,7 +456,9 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['avatar'] = [
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['assignedMember'] = [
-    'sql' => "int(10) NOT NULL default '0'",
+    'inputType' => 'text',
+    'eval' => ['doNotCopy' => true],
+    'sql'  => "int(10) NOT NULL default 0",
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['getPasswordField'] = [
