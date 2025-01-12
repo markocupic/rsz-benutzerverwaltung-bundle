@@ -224,7 +224,7 @@ class User
                 'dateOfBirth' => $objUser->dateOfBirth,
                 'language' => $objUser->language,
                 'website' => $objUser->url,
-                'login' => 1,
+                'login' => 0,
             ];
 
             // Get assigned member
@@ -232,16 +232,27 @@ class User
 
             if (null !== $objDbMember) {
                 // Sync from tl_user -> tl_member
-                $objDbMember->setRow($set);
-                $objDbMember->save();
+                foreach ($set as $k => $v) {
+                    $objDbMember->$k = $v;
+                }
+
+                if($objDbMember->isModified()){
+                    $objDbMember->tstamp = time();
+                    $objDbMember->save();
+                }
             } else {
                 try {
                     // Create new member
                     $set['dateAdded'] = time();
+                    $set['tstamp'] = time();
+
                     $objNewMember = new MemberModel();
 
                     // Sync tl_member with tl_user
-                    $objNewMember->setRow($set);
+                    foreach ($set as $k => $v) {
+                        $objDbMember->$k = $v;
+                    }
+
                     $objNewMember->save();
 
                     $objUser->assignedMember = $objNewMember->id;
