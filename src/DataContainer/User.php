@@ -34,6 +34,7 @@ use Contao\FilesModel;
 use Contao\Folder;
 use Contao\Image;
 use Contao\MemberModel;
+use Contao\Message;
 use Contao\StringUtil;
 use Contao\System;
 use Contao\UserModel;
@@ -41,6 +42,8 @@ use Markocupic\RszBenutzerverwaltungBundle\Security\RszBackendPermissions;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class User
 {
@@ -53,6 +56,7 @@ class User
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly RequestStack $requestStack,
+        private readonly RouterInterface $router,
         private readonly Security $security,
         private readonly LoggerInterface $contaoGeneralLogger,
         private readonly string $projectDir,
@@ -99,14 +103,14 @@ class User
                 break;
             case 'delete':
             case 'deleteAll':
-            if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_delete_rsz_users')) {
-                throw new AccessDeniedException('Not enough permissions to '.$request->query->get('act').' user with ID '.$request->query->get('id').'.');
-            }
+                if (!$this->security->isGranted(RszBackendPermissions::RSZ_USERS_PERMISSIONS, 'can_delete_rsz_users')) {
+                    throw new AccessDeniedException('Not enough permissions to '.$request->query->get('act').' user with ID '.$request->query->get('id').'.');
+                }
         }
     }
 
     #[AsCallback(table: 'tl_user', target: 'list.operations.delete.button', priority: 101)]
-    public function deleteUser($row, $href, $label, $title, $icon, $attributes)
+    public function deleteUser($row, $href, $label, $title, $icon, $attributes):string
     {
         $grant = false;
 
@@ -144,6 +148,8 @@ class User
     #[AsCallback(table: 'tl_user', target: 'config.onload', priority: 101)]
     public function maintainUserProperties(): void
     {
+        $this->framework->initialize();
+
         // Remove  orphaned user directories from filesystem
         $this->checkForOrphanedDirectories('athlet');
         $this->checkForOrphanedDirectories('trainer');
@@ -209,22 +215,22 @@ class User
             }
 
             $set = [
-                'username' => $objUser->username,
-                'firstname' => '' !== $firstname ? $firstname : 'firstname',
-                'lastname' => '' !== $lastname ? $lastname : 'lastname',
-                'gender' => $objUser->gender,
-                'email' => $objUser->email,
-                'street' => $objUser->street,
-                'postal' => $objUser->postal,
-                'city' => $objUser->city,
-                'mobile' => $objUser->mobile,
-                'phone' => $objUser->telephone,
+                'username'    => $objUser->username,
+                'firstname'   => '' !== $firstname ? $firstname : 'firstname',
+                'lastname'    => '' !== $lastname ? $lastname : 'lastname',
+                'gender'      => $objUser->gender,
+                'email'       => $objUser->email,
+                'street'      => $objUser->street,
+                'postal'      => $objUser->postal,
+                'city'        => $objUser->city,
+                'mobile'      => $objUser->mobile,
+                'phone'       => $objUser->telephone,
                 // Allow the backend password: See check credentials listener
                 //"password"    => $objUser->password,
                 'dateOfBirth' => $objUser->dateOfBirth,
-                'language' => $objUser->language,
-                'website' => $objUser->url,
-                'login' => 0,
+                'language'    => $objUser->language,
+                'website'     => $objUser->url,
+                'login'       => 0,
             ];
 
             // Get assigned member
@@ -236,7 +242,7 @@ class User
                     $objDbMember->$k = $v;
                 }
 
-                if($objDbMember->isModified()){
+                if ($objDbMember->isModified()) {
                     $objDbMember->tstamp = time();
                     $objDbMember->save();
                 }
@@ -247,13 +253,11 @@ class User
                     $set['tstamp'] = time();
 
                     $objNewMember = new MemberModel();
-
-                    // Sync tl_member with tl_user
-                    foreach ($set as $k => $v) {
-                        $objDbMember->$k = $v;
-                    }
-
+                    $objNewMember->setRow($set);
                     $objNewMember->save();
+
+                    // Show message in the Backend
+                    Message::addInfo(sprintf('Zum Backend-Benutzer "%s" wurde automatisch das dazugehörende Mitglied erstellt.', $objUser->name));
 
                     $objUser->assignedMember = $objNewMember->id;
                     $objUser->save();
@@ -262,7 +266,16 @@ class User
 
                     // Notify Admin
                     $subject = sprintf('Neuer Backend User auf %s', Environment::get('httpHost'));
-                    $link = sprintf('%scontao?do=user&act=edit&id=%s', Environment::get('base'), $objUser->id);
+
+                    $link = $this->router->generate(
+                        'contao_backend',
+                        [
+                            'do'  => 'user',
+                            'act' => 'edit',
+                            'id'  => $objUser->id,
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
 
                     $msg = sprintf('Hallo Admin'.\chr(10).'%s hat auf %s einen neuen Backend User angelegt.'.\chr(10).'Hier geht es zum User: '.\chr(10).'%s', $this->security->getUser()->name, Environment::get('httpHost'), $link);
 
